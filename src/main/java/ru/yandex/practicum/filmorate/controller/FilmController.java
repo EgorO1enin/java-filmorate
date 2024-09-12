@@ -20,12 +20,12 @@ public class FilmController {
     private Long filmId = 1L;
 
     @GetMapping()
-    public Collection<Film> getFilms(){
+    public Collection<Film> getFilms() {
         return films.values();
     }
 
     @PostMapping()
-    public Film addFilm(@RequestBody @Validated Film film){
+    public Film addFilm(@RequestBody @Validated Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 27))){
             log.error("Дата релиза не может быть раньше 28 декабря 1895 года;");
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года;");
@@ -38,7 +38,7 @@ public class FilmController {
     }
 
     @PutMapping()
-    public Film updateFilm(@RequestBody @Validated Film newFilm){
+    public Film updateFilm(@RequestBody @Validated Film newFilm) {
         Film oldfilm = films.get(newFilm.getId());
         newFilm.setId(oldfilm.getId());
         films.put(newFilm.getId(), newFilm);
