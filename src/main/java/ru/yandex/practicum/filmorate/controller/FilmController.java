@@ -26,7 +26,7 @@ public class FilmController {
 
     @PostMapping()
     public Film addFilm(@RequestBody @Validated Film film) {
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 27))){
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 27))) {
             log.error("Дата релиза не может быть раньше 28 декабря 1895 года;");
             throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года;");
         }
