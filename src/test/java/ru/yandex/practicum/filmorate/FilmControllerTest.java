@@ -15,7 +15,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
-@WebMvcTest(UserController .class)
+@WebMvcTest(UserController.class)
 class FilmControllerTest {
     @Autowired
     private MockMvc mockMvc;
