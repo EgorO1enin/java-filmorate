@@ -29,11 +29,10 @@ class FilmControllerTest {
         film.setDescription("description");
         film.setDuration(0);
         film.setReleaseDate(LocalDate.parse("1895-12-27"));
-        String filmJson= objectMapper.writeValueAsString(film);
+        String filmJson = objectMapper.writeValueAsString(film);
 
         mockMvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON)
-                        .content(filmJson))
-                .andExpect(status().is4xxClientError());
+                .content(filmJson)).andExpect(status().is4xxClientError());
     }
 
 }
