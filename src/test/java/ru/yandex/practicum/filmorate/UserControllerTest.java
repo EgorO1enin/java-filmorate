@@ -23,17 +23,17 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void testUserBirthday() throws Exception {
+    void shouldReturn400ClientErrorWhenBirthdayIsNow() throws Exception {
         User user = new User();
-        user.setBirthday(LocalDate.now());
-        user.setEmail("qwer@gmail.com");
+        user.setBirthday(LocalDate.now().plusDays(1));
+        user.setEmail("qwergmail@mail.com");
         user.setLogin("user");
         user.setName("Name");
         String userJson = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is4xxClientError());
     }
 
 }

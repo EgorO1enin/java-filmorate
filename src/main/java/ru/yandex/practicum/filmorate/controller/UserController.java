@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -30,10 +31,6 @@ public class UserController {
         id++;
         if (user.getName() == null) {
             user.setName(user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("birthday must be before now");
-            throw new IllegalArgumentException("birthday must be before now");
         }
         users.put(user.getId(), user);
         log.info("Добавлен пользователь{}", user);
