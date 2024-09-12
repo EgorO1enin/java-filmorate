@@ -29,7 +29,7 @@ class UserControllerTest {
         user.setEmail("qwer@gmail.com");
         user.setLogin("user");
         user.setName("Name");
-        String userJson= objectMapper.writeValueAsString(user);
+        String userJson = objectMapper.writeValueAsString(user);
 
         mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
