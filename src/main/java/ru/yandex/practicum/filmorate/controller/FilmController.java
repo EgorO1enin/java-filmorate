@@ -38,11 +38,11 @@ public class FilmController {
     }
 
     @PutMapping()
-    public Film updateFilm(@RequestBody @Validated Film newFilm) {
-        Film oldfilm = films.get(newFilm.getId());
-        newFilm.setId(oldfilm.getId());
-        films.put(newFilm.getId(), newFilm);
-        log.info("Фильм обновлен{}", newFilm);
-        return newFilm;
+    public Film updateFilm(@RequestBody @Validated Film updatedFilm) {
+        Film oldfilm = films.get(updatedFilm.getId());
+        updatedFilm.setId(oldfilm.getId());
+        films.put(updatedFilm.getId(), updatedFilm);
+        log.info("Фильм обновлен{}", updatedFilm);
+        return updatedFilm;
     }
 }

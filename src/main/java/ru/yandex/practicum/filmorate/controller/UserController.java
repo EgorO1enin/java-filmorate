@@ -36,11 +36,11 @@ public class UserController {
     }
 
     @PutMapping()
-    public User updateUser(@RequestBody @Validated User newUser) {
-        User oldUser = users.get(newUser.getId());
-        newUser.setId(oldUser.getId());
-        users.put(newUser.getId(), newUser);
-        log.info("Обновлен пользователь{}", newUser);
-        return newUser;
+    public User updateUser(@RequestBody @Validated User updatedUser) {
+        User oldUser = users.get(updatedUser.getId());
+        updatedUser.setId(oldUser.getId());
+        users.put(updatedUser.getId(), updatedUser);
+        log.info("Обновлен пользователь{}", updatedUser);
+        return updatedUser;
     }
 }
