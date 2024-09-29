@@ -23,7 +23,7 @@ public class UserService {
         if (user == null) {
             throw new NotFoundException("User not found");
         }
-        if (friend == null){
+        if (friend == null) {
             throw new NotFoundException("Friend not found");
         }
 
