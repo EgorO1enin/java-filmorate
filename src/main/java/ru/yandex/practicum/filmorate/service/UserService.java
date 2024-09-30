@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -48,10 +49,10 @@ public class UserService {
         User user = inMemoryUserStorage.getUserById(userid);
         User friend = inMemoryUserStorage.getUserById(friendId);
         if (user == null || friend == null) {
-            throw new NotFoundException("User or friend not found");
+            throw new ValidationException("User or friend not found");
         }
         if (!user.getFriends().contains(friendId)) {
-            throw new NotFoundException("User is not friend");
+            throw new ValidationException("User is not friend");
         }
         user.getFriends().remove(friendId);
         return "removed from friends";
@@ -61,7 +62,7 @@ public class UserService {
         User user = inMemoryUserStorage.getUserById(userid);
         User friend = inMemoryUserStorage.getUserById(friendId);
         if (user == null || friend == null) {
-            throw new NotFoundException("User or friend not found");
+            throw new ValidationException("User or friend not found");
         }
         Set<Long> commonFriends = user.getFriends();
         commonFriends.retainAll(friend.getFriends());

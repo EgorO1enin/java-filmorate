@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 
@@ -30,11 +29,11 @@ public class FilmService {
     }
 
     public String deleteLike(long filmId, long userId) {
-        if (inMemoryUserStorage.getUserById(userId) == null) {
-            throw new ValidationException("User not found");
-        }
         if (inMemoryFilmStorage.getFilm(filmId) == null) {
-            throw new ValidationException("Film not found");
+            throw new NotFoundException("Film not found");
+        }
+        if (inMemoryUserStorage.getUserById(userId) == null) {
+            throw new NotFoundException("User not found");
         }
         inMemoryFilmStorage.getFilm(filmId).getLikes().remove(userId);
         return "like deleted";

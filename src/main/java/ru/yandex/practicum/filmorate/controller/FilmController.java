@@ -40,12 +40,12 @@ public class FilmController {
        return inMemoryFilmStorage.updateFilm(updatedFilm);
     }
 
-    @PutMapping("{film_id}/like/{id}")
+    @PutMapping("{filmId}/like/{id}")
     public Film likeFilm(@PathVariable long filmId, @PathVariable long id) {
         return filmService.likeFilm(filmId, id);
     }
 
-    @DeleteMapping("{film_id}/like/{id}")
+    @DeleteMapping("{filmId}/like/{id}")
     public String removeLikeFilm(@PathVariable long filmId, @PathVariable long id) {
         return filmService.deleteLike(filmId, id);
     }

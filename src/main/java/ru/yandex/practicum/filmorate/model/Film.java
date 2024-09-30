@@ -11,19 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class Film implements Comparable<Film> {
-
-    @Override
-    public int compareTo(Film o) {
-        if (likes.size() == o.getLikes().size()) {
-            return 0;
-        }
-        if (likes.size() > o.getLikes().size()) {
-            return 1;
-        }
-        return -1;
-    }
-
+public class Film {
     private Long id;
     @NotBlank(message = "Название фильма не должно быть пустым")
     private String name;
