@@ -46,10 +46,10 @@ public class UserService {
     }
 
     public String deleteFriend(long userId, long friendId) {
-        if (inMemoryUserStorage.getUserById(userId) == null){
+        if (inMemoryUserStorage.getUserById(userId) == null) {
             throw new NotFoundException("User not found");
         }
-        if (inMemoryUserStorage.getUserById(friendId) == null){
+        if (inMemoryUserStorage.getUserById(friendId) == null) {
             throw new NotFoundException("Friend not found");
         }
         User user = inMemoryUserStorage.getUserById(userId);
