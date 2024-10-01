@@ -3,14 +3,12 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class Film {
     private Long id;
     @NotBlank(message = "Название фильма не должно быть пустым")

@@ -51,9 +51,9 @@ public class UserService {
         if (user == null || friend == null) {
             throw new ValidationException("User or friend not found");
         }
-        if (!user.getFriends().contains(friendId)) {
+        /*if (!user.getFriends().contains(friendId)) {
             throw new ValidationException("User is not friend");
-        }
+        }*/
         user.getFriends().remove(friendId);
         return "removed from friends";
     }

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -39,6 +40,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film updatedFilm) {
+        if (!films.containsKey(updatedFilm.getId())) {
+            throw new NotFoundException("Фильм с id" + updatedFilm.getId() + "не найден");
+        }
         Film oldfilm = films.get(updatedFilm.getId());
         updatedFilm.setId(oldfilm.getId());
         films.put(updatedFilm.getId(), updatedFilm);
@@ -46,6 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return updatedFilm;
     }
 
+    @Override
     public Film getFilm(long id) {
         return films.get(id);
     }

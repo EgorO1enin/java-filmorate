@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -7,15 +9,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
 public class FilmService {
-    private final InMemoryFilmStorage inMemoryFilmStorage;
-    private final InMemoryUserStorage inMemoryUserStorage;
+    private final FilmStorage inMemoryFilmStorage;
+    private final UserStorage inMemoryUserStorage;
 
-    public FilmService(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
-        this.inMemoryUserStorage = inMemoryUserStorage;
-    }
 
     public Film likeFilm(long filmId, long userId) {
         if (inMemoryUserStorage.getUserById(userId) == null) {
