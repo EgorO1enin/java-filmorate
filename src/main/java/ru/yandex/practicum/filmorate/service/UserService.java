@@ -46,17 +46,14 @@ public class UserService {
     }
 
     public String deleteFriend(long userId, long friendId) {
+        if (inMemoryUserStorage.getUserById(userId) == null){
+            throw new NotFoundException("User not found");
+        }
+        if (inMemoryUserStorage.getUserById(friendId) == null){
+            throw new NotFoundException("Friend not found");
+        }
         User user = inMemoryUserStorage.getUserById(userId);
         User friend = inMemoryUserStorage.getUserById(friendId);
-        /*if (user == null || friend == null) {
-            throw new ValidationException("User or friend not found");
-        }*/
-        if (!user.getFriends().contains(friendId)) {
-            throw new NotFoundException("No User");
-        }
-        if (!friend.getFriends().contains(userId)) {
-            throw new NotFoundException("No friend");
-        }
 
         user.getFriends().remove(friendId);
         friend.getFriends().remove(userId);
