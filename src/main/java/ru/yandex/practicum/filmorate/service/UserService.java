@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -9,13 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
     private final InMemoryUserStorage inMemoryUserStorage;
 
-    public UserService(InMemoryUserStorage inMemoryFilmStorage) {
-        this.inMemoryUserStorage = inMemoryFilmStorage;
-    }
 
     public Collection<User> addFriend(long userid, long friendId) {
         User user = inMemoryUserStorage.getUserById(userid);
