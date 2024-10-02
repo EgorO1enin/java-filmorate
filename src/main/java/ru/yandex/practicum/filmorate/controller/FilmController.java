@@ -1,48 +1,54 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.InMemoryFilmStorage;
 
-import java.time.LocalDate;
+
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/films")
+@RequiredArgsConstructor
 public class FilmController {
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private final Map<Long, Film> films = new HashMap<>();
-    private Long filmId = 1L;
+
+
+    public final InMemoryFilmStorage inMemoryFilmStorage;
+    public final FilmService filmService;
 
     @GetMapping()
     public Collection<Film> getFilms() {
-        return films.values();
+       return inMemoryFilmStorage.getFilms();
     }
 
     @PostMapping()
     public Film addFilm(@RequestBody @Validated Film film) {
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 27))) {
-            log.error("Дата релиза не может быть раньше 28 декабря 1895 года;");
-            throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года;");
-        }
-        film.setId(filmId);
-        filmId++;
-        films.put(film.getId(), film);
-        log.info("Фильм добавлен{}", film);
-        return film;
+        return inMemoryFilmStorage.addFilm(film);
     }
 
     @PutMapping()
     public Film updateFilm(@RequestBody @Validated Film updatedFilm) {
-        Film oldfilm = films.get(updatedFilm.getId());
-        updatedFilm.setId(oldfilm.getId());
-        films.put(updatedFilm.getId(), updatedFilm);
-        log.info("Фильм обновлен{}", updatedFilm);
-        return updatedFilm;
+       return inMemoryFilmStorage.updateFilm(updatedFilm);
+    }
+
+    @PutMapping("{filmId}/like/{id}")
+    public Film likeFilm(@PathVariable long filmId, @PathVariable long id) {
+        return filmService.likeFilm(filmId, id);
+    }
+
+    @DeleteMapping("{filmId}/like/{id}")
+    public String removeLikeFilm(@PathVariable long filmId, @PathVariable long id) {
+        return filmService.deleteLike(filmId, id);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam int count) {
+        return filmService.getPopularFilms(count);
+
     }
 }

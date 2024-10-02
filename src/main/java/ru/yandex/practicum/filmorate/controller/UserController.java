@@ -1,46 +1,62 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.slf4j.LoggerFactory;
+
+import ru.yandex.practicum.filmorate.service.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final InMemoryUserStorage inMemoryUserStorage;
+    private final UserService userService;
 
-    private final Map<Long, User> users = new HashMap<>();
-    private long id = 1;
+    public UserController(InMemoryUserStorage inMemoryUserStorage, UserService userService) {
+        this.inMemoryUserStorage = inMemoryUserStorage;
+        this.userService = userService;
+    }
 
     @GetMapping()
     public Collection<User> getUsers() {
-        return users.values();
+        return inMemoryUserStorage.getUsers();
     }
 
     @PostMapping()
     public User addUser(@RequestBody @Validated User user) {
-        user.setId(id);
-        id++;
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        users.put(user.getId(), user);
-        log.info("Добавлен пользователь{}", user);
-        return user;
+        return inMemoryUserStorage.addUser(user);
     }
 
     @PutMapping()
     public User updateUser(@RequestBody @Validated User updatedUser) {
-        User oldUser = users.get(updatedUser.getId());
-        updatedUser.setId(oldUser.getId());
-        users.put(updatedUser.getId(), updatedUser);
-        log.info("Обновлен пользователь{}", updatedUser);
-        return updatedUser;
+        return inMemoryUserStorage.updateUser(updatedUser);
+    }
+
+    @GetMapping("/get/{id}")
+    public User getUserById(@PathVariable("id") long id) {
+        return inMemoryUserStorage.getUserById(id);
+    }
+
+    @PutMapping("/{id}/friends/{friend_id}")
+    public Collection<User> addFriend(@PathVariable("id") long id, @PathVariable("friend_id") long friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriends(@PathVariable("id") long id) {
+        return userService.getFriends(id);
+    }
+
+    @DeleteMapping("/{id}/friends/{friend_id}")
+    public String deleteFriend(@PathVariable("id") long id, @PathVariable("friend_id") long friendId) {
+        return userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@PathVariable("id") long id, @PathVariable("otherId") long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 }
