@@ -11,8 +11,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -67,7 +65,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
-    public User updateUser(User updatedUser){
+    public User updateUser(User updatedUser) {
         if (getUserById(updatedUser.getId()) != null) {
             String sqlQuery = "UPDATE users SET " +
                     "email = ?, " +
