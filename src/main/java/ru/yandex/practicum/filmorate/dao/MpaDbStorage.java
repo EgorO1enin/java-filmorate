@@ -38,7 +38,7 @@ public class MpaDbStorage {
         return mpa;
     }
 
-    public List<Mpa> getAllMpas(){
+    public List<Mpa> getAllMpas() {
         List<Mpa> mpas = new ArrayList<>();
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT * FROM ratings_mpa");
         while (mpaRows.next()) {
