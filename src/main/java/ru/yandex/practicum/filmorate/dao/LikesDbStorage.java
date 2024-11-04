@@ -8,6 +8,7 @@ import java.util.List;
 @Component
 public class LikesDbStorage {
     private final JdbcTemplate jdbcTemplate;
+
     public LikesDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

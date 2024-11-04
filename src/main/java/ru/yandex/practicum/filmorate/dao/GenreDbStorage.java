@@ -18,6 +18,7 @@ public class GenreDbStorage {
 
     @Autowired
     private final JdbcTemplate jdbcTemplate;
+
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
