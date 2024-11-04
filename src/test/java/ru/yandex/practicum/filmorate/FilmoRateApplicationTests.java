@@ -7,13 +7,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @JdbcTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Import({UserDbStorage.class})
+@Import({UserDbStorage.class, UserRowMapper.class})
 class FilmoRateApplicationTests {
     private final UserDbStorage userStorage;
 
