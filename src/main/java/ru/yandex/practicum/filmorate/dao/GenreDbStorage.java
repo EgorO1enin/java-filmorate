@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class GenreDbStorage{
+public class GenreDbStorage {
 
     @Autowired
     private final JdbcTemplate jdbcTemplate;
