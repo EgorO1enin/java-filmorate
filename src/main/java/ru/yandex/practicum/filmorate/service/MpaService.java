@@ -18,7 +18,7 @@ public class MpaService {
         return mpaDbStorage.getMpaById(mpaId);
     }
 
-    public List<Mpa> getAllMpas(){
+    public List<Mpa> getAllMpas() {
         return mpaDbStorage.getAllMpas();
     }
 }
