@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 @Component
 public class UserRowMapper implements RowMapper<User> {
+
     @Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User(1L, "email", "login", "ekdfj", LocalDate.now());

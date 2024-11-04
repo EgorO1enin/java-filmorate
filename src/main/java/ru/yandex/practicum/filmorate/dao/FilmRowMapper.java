@@ -14,7 +14,8 @@ import java.sql.SQLException;
 @AllArgsConstructor
 @Component
 public class FilmRowMapper implements RowMapper<Film> {
-    private final GenreService service ;
+    private final GenreService service;
+
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         Film film = new Film();
