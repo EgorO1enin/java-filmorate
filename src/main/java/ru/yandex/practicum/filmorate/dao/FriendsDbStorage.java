@@ -16,6 +16,7 @@ import java.util.List;
 public class FriendsDbStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserService userService;
+
     public Collection<User> getCommonFriends(Long firstUserId, Long lastUserId) {
         User firstUser = userService.getUserById(firstUserId);
         User lastUser = userService.getUserById(lastUserId);
@@ -52,7 +53,7 @@ public class FriendsDbStorage {
                 "FROM friends f " +
                 "INNER JOIN users u ON f.user2 = u.id " +
                 "WHERE f.user1 = ?";
-        if (user.getId() == null){
+        if (user.getId() == null) {
             throw new ValidationException("Пользователь с ID=" + userId + " не найден!");
         }
         return jdbcTemplate.query(sql, new Object[]{userId}, (rs, rowNum) -> new User(
