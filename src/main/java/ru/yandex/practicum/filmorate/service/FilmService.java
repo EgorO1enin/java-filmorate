@@ -1,45 +1,44 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.dao.FilmDbStorage;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
-
+import java.time.LocalDate;
 import java.util.*;
 
-@RequiredArgsConstructor
 @Service
 public class FilmService {
-    private final FilmStorage inMemoryFilmStorage;
-    private final UserStorage inMemoryUserStorage;
+    private final FilmDbStorage filmDbStorage;
 
-
-    public Film likeFilm(long filmId, long userId) {
-        if (inMemoryUserStorage.getUserById(userId) == null) {
-            throw new NotFoundException("User not found");
-        }
-        if (inMemoryFilmStorage.getFilm(filmId) == null) {
-            throw new NotFoundException("Film not found");
-        }
-        inMemoryFilmStorage.getFilm(filmId).getLikes().add(userId);
-        return inMemoryFilmStorage.getFilm(filmId);
+    @Autowired
+    public FilmService(FilmDbStorage filmDbStorage) {
+        this.filmDbStorage = filmDbStorage;
     }
 
-    public String deleteLike(long filmId, long userId) {
-        if (inMemoryFilmStorage.getFilm(filmId) == null) {
-            throw new NotFoundException("Film not found");
+    public Film addFilm(Film film) {
+        if (film.getReleaseDate().isBefore((LocalDate.of(1895, 12, 27)))){
+            throw new ValidationException("Invalid date");
         }
-        if (inMemoryUserStorage.getUserById(userId) == null) {
-            throw new NotFoundException("User not found");
-        }
-        inMemoryFilmStorage.getFilm(filmId).getLikes().remove(userId);
-        return "like deleted";
+        filmDbStorage.addFilm(film);
+        return film;
     }
 
-    public Collection<Film> getPopularFilms(int size) {
-        return inMemoryFilmStorage.getFilms().stream()
-                .sorted(Comparator.comparingInt(Film::getLikesLength).reversed()).limit(size).toList();
+    public List<Film> getFilms() {
+        return filmDbStorage.getFilms();
+    }
 
+    public Film getFilm(long filmId) {
+        return filmDbStorage.getFilm(filmId);
+    }
+
+    public Film updateFilm(Film film) {
+        filmDbStorage.updateFilm(film);
+        return film;
+    }
+
+    public Collection<Film> getPopularFilms(int count) {
+        return filmDbStorage.getPopularFilms(count);
     }
 }

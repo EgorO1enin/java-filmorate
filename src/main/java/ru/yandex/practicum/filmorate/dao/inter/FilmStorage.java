@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.dao.inter;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -11,5 +11,5 @@ public interface FilmStorage {
 
     public Film updateFilm(Film film);
 
-    Film getFilm(long id);
+    Film getFilm(Long id);
 }

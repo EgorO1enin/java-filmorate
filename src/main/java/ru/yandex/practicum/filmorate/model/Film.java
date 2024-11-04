@@ -3,11 +3,18 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Film {
     private Long id;
@@ -18,9 +25,6 @@ public class Film {
     private LocalDate releaseDate;
     @Min(value = 1, message = "Количество минут фильма должно быть больше нуля")
     private int duration;
-    private final Set<Long> likes = new HashSet<>();
-
-    public int getLikesLength() {
-        return likes.size();
-    }
+    private Mpa mpa;
+    private Set<Genre> genres;
 }
