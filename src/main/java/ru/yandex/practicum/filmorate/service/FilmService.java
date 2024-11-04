@@ -18,7 +18,7 @@ public class FilmService {
     }
 
     public Film addFilm(Film film) {
-        if (film.getReleaseDate().isBefore((LocalDate.of(1895, 12, 27)))){
+        if (film.getReleaseDate().isBefore((LocalDate.of(1895, 12, 27)))) {
             throw new ValidationException("Invalid date");
         }
         filmDbStorage.addFilm(film);
