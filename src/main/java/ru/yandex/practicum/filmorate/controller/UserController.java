@@ -10,18 +10,20 @@ import java.util.List;
 
 import ru.yandex.practicum.filmorate.dao.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.service.FriendsService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final InMemoryUserStorage inMemoryUserStorage;
     private final UserService userService;
+    private final FriendsService friendsService;
+
 
     @Autowired
-    public UserController(UserDbStorage userDbStorage, InMemoryUserStorage inMemoryUserStorage, UserService userService) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
+    public UserController(UserService userService, FriendsService friendsService) {
         this.userService = userService;
+        this.friendsService = friendsService;
     }
 
     @GetMapping()
@@ -46,21 +48,21 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friend_id}")
     public User addFriend(@PathVariable("id") long id, @PathVariable("friend_id") long friendId) {
-        return userService.addFriend(id, friendId);
+        return friendsService.addFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable long id) {
-        return userService.getFriends(id);
+        return friendsService.getFriends(id);
     }
 
     @DeleteMapping("/{id}/friends/{friend_id}")
     public User removeFriend(@PathVariable("id") long id, @PathVariable("friend_id") long friendId) {
-        return userService.removeFriend(id, friendId);
+        return friendsService.removeFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
-        return userService.getCommonFriends(id, otherId);
+        return friendsService.getCommonFriends(id, otherId);
     }
 }
