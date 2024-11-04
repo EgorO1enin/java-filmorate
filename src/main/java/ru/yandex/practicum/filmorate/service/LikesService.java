@@ -13,7 +13,7 @@ public class LikesService {
         this.likesDbStorage = likesDbStorage;
     }
 
-    public void addLike(Long userId, Long filmId){
+    public void addLike(Long userId, Long filmId) {
         likesDbStorage.likeFilmByuser(userId, filmId);
     }
 
