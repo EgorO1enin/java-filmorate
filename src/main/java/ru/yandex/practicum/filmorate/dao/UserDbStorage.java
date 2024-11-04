@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -18,22 +19,18 @@ import java.util.List;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final UserRowMapper userRowMapper;
 
     @Autowired
-    public UserDbStorage(final JdbcTemplate jdbcTemplate) {
+    public UserDbStorage(final JdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.userRowMapper = userRowMapper;
     }
 
     @Override
     public List<User> getUsers() {
         String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new User(
-                rs.getLong("id"),             // id
-                rs.getString("login"),        // login
-                rs.getString("email"),        // email
-                rs.getString("name"),         // name
-                rs.getDate("birthday").toLocalDate() // birthday
-        ));
+        return jdbcTemplate.query(sql, userRowMapper);
     }
 
     @Override
@@ -41,19 +38,14 @@ public class UserDbStorage implements UserStorage {
         if (id == null) {
             throw new ValidationException("User Id не может быть null");
         }
-        User user;
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE id = ?", id);
-        if (userRows.first()) {
-            user = new User(
-                    userRows.getLong("id"),
-                    userRows.getString("email"),
-                    userRows.getString("login"),
-                    userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate());
-        } else {
+
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try {
+            return jdbcTemplate.queryForObject(sql, userRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователь с ID=" + id + " не найден!");
         }
-        return user;
     }
 
     @Override
