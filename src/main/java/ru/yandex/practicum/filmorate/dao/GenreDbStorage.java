@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -13,15 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Component
 public class GenreDbStorage {
 
-    @Autowired
     private final JdbcTemplate jdbcTemplate;
-
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public void addGenere(Film film) {
         if (film.getGenres() != null) {

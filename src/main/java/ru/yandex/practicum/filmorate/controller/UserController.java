@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,24 +13,19 @@ import ru.yandex.practicum.filmorate.service.FriendsService;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final FriendsService friendsService;
 
 
-    @Autowired
-    public UserController(UserService userService, FriendsService friendsService) {
-        this.userService = userService;
-        this.friendsService = friendsService;
-    }
-
     @GetMapping()
     public Collection<User> getUsers() {
         return userService.getUsers();
     }
 
-    @PostMapping()
+    @PostMapping
     public User addUser(@RequestBody @Validated User user) {
         return userService.addUser(user);
     }

@@ -2,12 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.dao.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.service.LikesService;
 
 import java.util.Collection;
@@ -19,13 +17,8 @@ public class FilmController {
     private final FilmService filmService;
     private final LikesService likesService;
 
-    @Autowired
-    public FilmController(final FilmService filmService, InMemoryFilmStorage inMemoryFilmStorage, LikesService likesService) {
-        this.filmService = filmService;
-        this.likesService = likesService;
-    }
 
-    @GetMapping()
+    @GetMapping
     public Collection<Film> getFilms() {
        return filmService.getFilms();
     }
