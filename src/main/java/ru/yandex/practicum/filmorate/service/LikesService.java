@@ -17,9 +17,9 @@ public class LikesService {
         likesDbStorage.likeFilmByuser(userId, filmId);
     }
 
-   public void removeLike(Long userId, Long filmId) {
-       likesDbStorage.deleteLike(userId, filmId);
-   }
+    public void removeLike(Long userId, Long filmId) {
+        likesDbStorage.deleteLike(userId, filmId);
+    }
 
     public List<Long> getLikes(Long filmId) {
         return likesDbStorage.getLikes(filmId);
