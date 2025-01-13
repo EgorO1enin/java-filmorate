@@ -28,7 +28,6 @@ class GenreControllerTest {
     @MockBean
     private GenreService genreService;
 
-
     @Test
     @DisplayName("Test getAllGenres()")
     @Disabled("TODO: Complete this test")

@@ -34,45 +34,6 @@ class FilmControllerTest {
     @MockBean
     private LikesService likesService;
 
-    @Test
-    @DisplayName("Test addFilm(Film)")
-    @Disabled("TODO: Complete this test")
-    void testAddFilm() throws Exception {
-        Film film = new Film();
-        film.setDescription("The characteristics of someone or something");
-        film.setDuration(1);
-        film.setId(1L);
-        film.setMpa(new Mpa(1L, "Name"));
-        film.setName("Name");
-        film.setReleaseDate(LocalDate.of(1970, 1, 1));
-        String content = (new ObjectMapper()).writeValueAsString(film);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/films")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content);
-
-        // Act
-        MockMvcBuilders.standaloneSetup(filmController).build().perform(requestBuilder);
-    }
-
-
-    @Test
-    @DisplayName("Test updateFilm(Film)")
-    @Disabled("TODO: Complete this test")
-    void testUpdateFilm() throws Exception {
-        Film film = new Film();
-        film.setDescription("The characteristics of someone or something");
-        film.setDuration(1);
-        film.setId(1L);
-        film.setMpa(new Mpa(1L, "Name"));
-        film.setName("Name");
-        film.setReleaseDate(LocalDate.of(1970, 1, 1));
-        String content = (new ObjectMapper()).writeValueAsString(film);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/films")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content);
-        MockMvcBuilders.standaloneSetup(filmController).build().perform(requestBuilder);
-    }
-
     @DisplayName("Test removeLikeFilm(long, long)")
     @Disabled("TODO: Complete this test")
     void testRemoveLikeFilm() throws Exception {

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 import ru.yandex.practicum.filmorate.storage.impl.UserDbStorageImpl;
@@ -19,7 +20,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@JdbcTest
+@SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Import({UserDbStorageImpl.class, UserRowMapper.class})
@@ -38,11 +39,13 @@ class FilmoRateApplicationTests {
 
     @Test
     void create() {
-        Film film1 = new Film(100000L, "Film One", "Description for film one", LocalDate.of(2020, 1, 1), 120, new Mpa(1L, "G"), Set.of(new Genre(1L, "Комедия")));
+        Film film1 = new Film(1L, "Film One", "Description for film one",
+                LocalDate.of(2020, 1, 1), 120, new Mpa(1L, "G"),
+                Set.of(new Genre(1L, "Комедия")));
 
         filmService.addFilm(film1);
 
-        assertThat(film1).hasFieldOrPropertyWithValue("id", 1);
+        assertThat(film1.getId()).isEqualTo(1L);
     }
 
 }

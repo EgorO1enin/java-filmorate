@@ -99,15 +99,4 @@ class UserControllerTest {
         MockMvcBuilders.standaloneSetup(userController).build().perform(requestBuilder);
     }
 
-    @Test
-    @DisplayName("Test addUser(User)")
-    @Disabled("TODO: Complete this test")
-    void testAddUser() throws Exception {
-        MockHttpServletRequestBuilder contentTypeResult = MockMvcRequestBuilders.post("/users")
-                .contentType(MediaType.APPLICATION_JSON);
-        ObjectMapper objectMapper = new ObjectMapper();
-        MockHttpServletRequestBuilder requestBuilder = contentTypeResult.content(objectMapper
-                .writeValueAsString(new User(1L, "jane.doe@example.org", "Login", "Name", LocalDate.of(1970, 1, 1))));
-        MockMvcBuilders.standaloneSetup(userController).build().perform(requestBuilder);
-    }
 }
