@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.inter.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
@@ -16,13 +16,13 @@ import java.util.List;
 
 @Slf4j
 @Component(value = "userDbStorage")
-public class UserDbStorage implements UserStorage {
+public class UserDbStorageImpl implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final UserRowMapper userRowMapper;
 
     @Autowired
-    public UserDbStorage(final JdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
+    public UserDbStorageImpl(final JdbcTemplate jdbcTemplate, UserRowMapper userRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.userRowMapper = userRowMapper;
     }
@@ -57,6 +57,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public User updateUser(User updatedUser) {
         if (getUserById(updatedUser.getId()) != null) {
             String sqlQuery = "UPDATE users SET " +

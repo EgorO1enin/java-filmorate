@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,11 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
-public class GenreDbStorage {
+public class GenreDbStorageImpl implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Override
     public void addGenere(Film film) {
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
@@ -28,11 +30,13 @@ public class GenreDbStorage {
         }
     }
 
+    @Override
     public void addFilmGenre(long filmId, Long genreId) {
         String sql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, filmId, genreId);
     }
 
+    @Override
     public Genre getGenreById(Long genreId) {
         if (genreId == null) {
             throw new ValidationException("Передан пустой аргумент!");
@@ -50,6 +54,7 @@ public class GenreDbStorage {
         return genre;
     }
 
+    @Override
     public List<Genre> getAllGenres() {
         List<Genre> genres = new ArrayList<>();
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM genres ORDER BY id");
@@ -59,6 +64,7 @@ public class GenreDbStorage {
         return genres;
     }
 
+    @Override
     public void deleteGenre(Film film) {
         jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?", film.getId());
     }
@@ -66,8 +72,8 @@ public class GenreDbStorage {
     public Set<Genre> getFilmGenres(Long genreId) {
         String sql = "SELECT * FROM film_genres WHERE genre_id = ?";
         return (Set<Genre>) jdbcTemplate.query(sql, (rs, rowNum) -> new Genre(
-                rs.getLong("id"),
-                rs.getString("name")),
+                        rs.getLong("id"),
+                        rs.getString("name")),
                 genreId);
 
     }

@@ -24,7 +24,7 @@ import java.time.LocalDate;
 @ContextConfiguration(classes = {FilmController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class FilmControllerDiffblueTest {
+class FilmControllerTest {
     @Autowired
     private FilmController filmController;
 

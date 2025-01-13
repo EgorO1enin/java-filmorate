@@ -1,13 +1,16 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.handler;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.yandex.practicum.filmorate.controller.ErrorResponse;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class ErrorHandler {
 

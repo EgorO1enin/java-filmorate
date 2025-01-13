@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.MpaDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.MpaDbStorageImpl;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 
 @Service
 public class MpaService {
-    private final MpaDbStorage mpaDbStorage;
+    private final MpaDbStorageImpl mpaDbStorage;
 
-    public MpaService(final MpaDbStorage mpaDbStorage) {
+    public MpaService(final MpaDbStorageImpl mpaDbStorage) {
         this.mpaDbStorage = mpaDbStorage;
     }
 

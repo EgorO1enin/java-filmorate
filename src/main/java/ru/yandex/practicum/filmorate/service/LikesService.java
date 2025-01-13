@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.LikesDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.LikesDbStorageImpl;
 
 import java.util.List;
 
 @Service
 public class LikesService {
-    private final LikesDbStorage likesDbStorage;
+    private final LikesDbStorageImpl likesDbStorage;
 
-    public LikesService(final LikesDbStorage likesDbStorage) {
+    public LikesService(final LikesDbStorageImpl likesDbStorage) {
         this.likesDbStorage = likesDbStorage;
     }
 

@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.UserDbStorageImpl;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    private final UserDbStorage userDbStorage;
+    private final UserDbStorageImpl userDbStorage;
 
     public List<User> getUsers() {
         return userDbStorage.getUsers();

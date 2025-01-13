@@ -1,11 +1,11 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.filmorate.dao.inter.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
@@ -20,16 +20,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class FilmDbStorage implements FilmStorage {
+public class FilmDbStorageImpl implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final LikesDbStorage likeDbStorage;
-    private final GenreDbStorage genreDbStorage;
+    private final LikesDbStorageImpl likeDbStorage;
+    private final GenreDbStorageImpl genreDbStorage;
     private final MpaService mpaService;
     private final GenreService genreService;
     private final FilmRowMapper filmRowMapper;
     private final FilmRowMapper rowMapper;
 
-    public FilmDbStorage(final JdbcTemplate jdbcTemplate, LikesDbStorage likeDbStorage, GenreDbStorage genreDbStorage, MpaService mpaService, GenreService genreService, FilmRowMapper filmRowMapper, FilmRowMapper rowMapper) {
+    public FilmDbStorageImpl(final JdbcTemplate jdbcTemplate, LikesDbStorageImpl likeDbStorage, GenreDbStorageImpl genreDbStorage, MpaService mpaService, GenreService genreService, FilmRowMapper filmRowMapper, FilmRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.likeDbStorage = likeDbStorage;
         this.genreDbStorage = genreDbStorage;

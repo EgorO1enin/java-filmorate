@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.FriendsStorage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,10 +14,11 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class FriendsDbStorage {
+public class FriendsDbStorageImpl implements FriendsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserService userService;
 
+    @Override
     public Collection<User> getCommonFriends(Long firstUserId, Long lastUserId) {
         User firstUser = userService.getUserById(firstUserId);
         User lastUser = userService.getUserById(lastUserId);
@@ -37,6 +39,7 @@ public class FriendsDbStorage {
         return commonFriends;
     }
 
+    @Override
     public User removeFriend(Long userId, Long friendId) {
         User user = userService.getUserById(userId);
         if (user == null || friendId == null) {
@@ -47,6 +50,7 @@ public class FriendsDbStorage {
         return user;
     }
 
+    @Override
     public List<User> getFriends(Long userId) {
         User user = userService.getUserById(userId);
         String sql = "SELECT u.id, u.email, u.login, u.name, u.birthday " +
@@ -65,6 +69,7 @@ public class FriendsDbStorage {
         ));
     }
 
+    @Override
     public void addFriend(Long userId, Long friendId) {
         User user = userService.getUserById(userId);
         User friend = userService.getUserById(friendId);

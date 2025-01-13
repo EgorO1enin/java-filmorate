@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.impl.GenreDbStorageImpl;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -10,9 +10,9 @@ import java.util.Set;
 
 @Service
 public class GenreService {
-    private final GenreDbStorage genreDbStorage;
+    private final GenreDbStorageImpl genreDbStorage;
 
-    public GenreService(final GenreDbStorage genreDbStorage) {
+    public GenreService(final GenreDbStorageImpl genreDbStorage) {
         this.genreDbStorage = genreDbStorage;
     }
 

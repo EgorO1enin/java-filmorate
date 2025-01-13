@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @ContextConfiguration(classes = {UserController.class})
 @ExtendWith(SpringExtension.class)
 @DisabledInAotMode
-class UserControllerDiffblueTest {
+class UserControllerTest {
     @MockBean
     private FriendsService friendsService;
 
