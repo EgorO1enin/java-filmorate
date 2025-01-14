@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import java.util.List;
 
-public interface LikesStorage {
+interface LikesStorage {
 
     public List<Long> getLikes(Long filmId);
 

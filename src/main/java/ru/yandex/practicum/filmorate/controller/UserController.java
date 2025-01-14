@@ -18,7 +18,7 @@ public class UserController {
     private final FriendsService friendsService;
 
 
-    @GetMapping()
+    @GetMapping
     public Collection<User> getUsers() {
         return userService.getUsers();
     }
