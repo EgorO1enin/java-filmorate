@@ -2,11 +2,11 @@ package ru.yandex.practicum.filmorate.storage;
 
 import java.util.List;
 
-interface LikesStorage {
+public interface LikesStorage {
 
-    public List<Long> getLikes(Long filmId);
+    List<Long> getLikes(Long filmId);
 
-    public void likeFilmByuser(Long filmId, Long userId);
+    void likeFilmByuser(Long filmId, Long userId);
 
-    public void deleteLike(Long filmId, Long userId);
+    void deleteLike(Long filmId, Long userId);
 }
