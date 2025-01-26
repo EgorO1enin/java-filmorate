@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.film;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 public class FilmTest {
