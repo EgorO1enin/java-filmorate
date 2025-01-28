@@ -61,7 +61,7 @@ public class FilmDbStorageImpl implements FilmStorage {
             }
             return film;
         } catch (Exception e) {
-            throw new ValidationException("Ошибка при добавлении фильма");
+            throw new NotFoundException("Ошибка при добавлении фильма");
         }
     }
 
