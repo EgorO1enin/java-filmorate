@@ -19,7 +19,6 @@ import ru.yandex.practicum.filmorate.service.MpaService;
 
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 

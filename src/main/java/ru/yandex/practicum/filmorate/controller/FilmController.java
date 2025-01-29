@@ -23,7 +23,7 @@ public class FilmController {
         return filmService.getFilms();
     }
 
-    @PostMapping()
+    @PostMapping
     public Film addFilm(@RequestBody @Validated Film film) {
         return filmService.addFilm(film);
     }
@@ -33,15 +33,14 @@ public class FilmController {
         return filmService.getFilm(id);
     }
 
-    @PutMapping("{filmId}/like/{id}")
+    @PutMapping("/{filmId}/like/{id}")
     public void likeFilm(@PathVariable long filmId, @PathVariable long id) {
         likesService.addLike(filmId, id);
     }
 
-    @DeleteMapping("{filmId}/like/{id}")
-    public String removeLikeFilm(@PathVariable long filmId, @PathVariable long id) {
+    @DeleteMapping("/{filmId}/like/{id}")
+    public void removeLikeFilm(@PathVariable long filmId, @PathVariable long id) {
         likesService.removeLike(filmId, id);
-        return "like on film with id = " + filmId + " was removed from user with id " + id;
     }
 
     @PutMapping
