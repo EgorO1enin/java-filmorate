@@ -28,7 +28,7 @@ public class UserController {
         return userService.addUser(user);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable("id") long id) {
         return userService.getUserById(id);
     }
@@ -56,5 +56,10 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         return friendsService.getCommonFriends(id, otherId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void removeUser(@PathVariable long id) {
+        userService.removeUser(id);
     }
 }

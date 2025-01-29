@@ -77,4 +77,15 @@ public class UserDbStorageImpl implements UserStorage {
             throw new NotFoundException("Пользователь с ID=" + updatedUser.getId() + " не найден!");
         }
     }
+
+    @Override
+    public void removeUser(long id) {
+        User newUser = getUserById(id);
+        if (newUser != null) {
+            String sqlQuery = "DELETE FROM users WHERE id = ?";
+            jdbcTemplate.update(sqlQuery, id);
+        } else {
+            throw new NotFoundException("Пользователь с ID=" + id + " не найден!");
+        }
+    }
 }

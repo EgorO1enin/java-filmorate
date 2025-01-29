@@ -39,4 +39,8 @@ public class FilmService {
     public Collection<Film> getPopularFilms(int count) {
         return filmDbStorage.getPopularFilms(count);
     }
+
+    public void removeFilm(long id) {
+        filmDbStorage.removeFilm(id);
+    }
 }
