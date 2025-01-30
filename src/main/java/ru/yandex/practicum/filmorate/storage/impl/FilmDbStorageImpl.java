@@ -144,6 +144,16 @@ public class FilmDbStorageImpl implements FilmStorage {
         return film;
     }
 
+    @Override
+    public void removeFilm(long id) {
+        if (getFilm(id) != null) {
+            String sqlQuery = "DELETE FROM films WHERE id = ?";
+            jdbcTemplate.update(sqlQuery, id);
+        } else {
+            throw new NotFoundException("Пользователь с ID=" + id + " не найден!");
+        }
+    }
+
     public Set<Genre> getFilmGenres(Long filmId) {
         String sql = "SELECT genre_id, name FROM film_genres" +
                 " INNER JOIN genres ON genre_id = id WHERE film_id = ?";
