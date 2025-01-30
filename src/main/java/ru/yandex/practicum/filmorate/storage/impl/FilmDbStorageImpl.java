@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -17,7 +19,8 @@ import ru.yandex.practicum.filmorate.service.MpaService;
 
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class FilmDbStorageImpl implements FilmStorage {
@@ -28,8 +31,9 @@ public class FilmDbStorageImpl implements FilmStorage {
     private final GenreService genreService;
     private final FilmRowMapper filmRowMapper;
     private final FilmRowMapper rowMapper;
+    private final UserService userService;
 
-    public FilmDbStorageImpl(final JdbcTemplate jdbcTemplate, LikesDbStorageImpl likeDbStorage, GenreDbStorageImpl genreDbStorage, MpaService mpaService, GenreService genreService, FilmRowMapper filmRowMapper, FilmRowMapper rowMapper) {
+    public FilmDbStorageImpl(final JdbcTemplate jdbcTemplate, LikesDbStorageImpl likeDbStorage, GenreDbStorageImpl genreDbStorage, MpaService mpaService, GenreService genreService, FilmRowMapper filmRowMapper, FilmRowMapper rowMapper, UserService userService) {
         this.jdbcTemplate = jdbcTemplate;
         this.likeDbStorage = likeDbStorage;
         this.genreDbStorage = genreDbStorage;
@@ -37,6 +41,7 @@ public class FilmDbStorageImpl implements FilmStorage {
         this.genreService = genreService;
         this.filmRowMapper = filmRowMapper;
         this.rowMapper = rowMapper;
+        this.userService = userService;
     }
 
     @Transactional
@@ -98,7 +103,7 @@ public class FilmDbStorageImpl implements FilmStorage {
             if (film.getGenres() != null) {
                 Collection<Genre> sortGenres = film.getGenres().stream()
                         .sorted(Comparator.comparing(Genre::getId))
-                        .collect(Collectors.toList());
+                        .collect(toList());
                 film.setGenres(new LinkedHashSet<>(sortGenres));
                 for (Genre genre : film.getGenres()) {
                     genre.setName(genreService.getGenreById(genre.getId()).getName());
@@ -178,6 +183,28 @@ public class FilmDbStorageImpl implements FilmStorage {
                         getRatingById(rs.getInt("rating_id")),
                         getFilmGenres(rs.getLong("film_id"))), count);
 
+    }
+
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        User firstUser = userService.getUserById(userId);
+        User lastUser = userService.getUserById(friendId);
+        if (firstUser == null || lastUser == null) {
+            throw new ValidationException("First User or Second User not found");
+        }
+
+        String sql = "SELECT film_id FROM film_likes WHERE user_id = ?";
+        List<Long> usersFilms = jdbcTemplate.queryForList(sql, Long.class, userId);
+        List<Long> friendsFilms = jdbcTemplate.queryForList(sql, Long.class, friendId);
+        return usersFilms.stream()
+                .filter(friendsFilms::contains)
+                .map(this::getFilm)
+                .sorted(Comparator.comparing(this::getLikesCount).reversed())
+                .toList();
+    }
+
+    public Integer getLikesCount(Film film) {
+        String sql = "SELECT COUNT(film_id) FROM film_likes WHERE film_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, film.getId());
     }
 }
 
