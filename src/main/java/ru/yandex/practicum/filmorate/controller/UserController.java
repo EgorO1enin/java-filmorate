@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @PutMapping
-    public void updateUser(@RequestBody @Validated User updatedUser) {
-         userService.updateUser(updatedUser);
+    public User updateUser(@RequestBody @Validated User updatedUser) {
+         return userService.updateUser(updatedUser);
     }
 
     @PutMapping("/{id}/friends/{friend_id}")

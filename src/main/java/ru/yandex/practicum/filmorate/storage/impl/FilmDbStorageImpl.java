@@ -75,6 +75,7 @@ public class FilmDbStorageImpl implements FilmStorage {
         }
 
         try {
+            // Сохраняем фильм и получаем его ID
             long filmId = simpleJdbcInsert.executeAndReturnKey(filmData).longValue();
             film.setId(filmId);
 
@@ -85,11 +86,30 @@ public class FilmDbStorageImpl implements FilmStorage {
                 }
             }
 
+            // Загружаем полные данные для MPA
+            if (film.getMpa() != null && film.getMpa().getId() != null) {
+                Mpa fullMpa = getRatingById(Math.toIntExact(film.getMpa().getId()));
+                film.setMpa(fullMpa);
+            }
+
+            // Загружаем полные данные для жанров
+            if (film.getGenres() != null && !film.getGenres().isEmpty()) {
+                Set<Genre> fullGenres = getFilmGenres(filmId);
+                film.setGenres(fullGenres);
+            }
+
+            // Загружаем полные данные для режиссера
+            if (film.getDirector() != null && film.getDirector().getId() != null) {
+                Director fullDirector = directorService.getDirectorById(film.getDirector().getId());
+                film.setDirector(fullDirector);
+            }
+
             return film;
         } catch (Exception e) {
             throw new NotFoundException("Ошибка при добавлении фильма: " + e.getMessage());
         }
     }
+
 
 
     @Override

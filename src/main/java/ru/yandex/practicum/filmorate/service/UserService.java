@@ -24,8 +24,8 @@ public class UserService {
         return userDbStorage.addUser(user);
     }
 
-    public void updateUser(User user) {
-        userDbStorage.updateUser(user);
+    public User updateUser(User user) {
+        return userDbStorage.updateUser(user);
     }
 
     public void removeUser(long id) {
