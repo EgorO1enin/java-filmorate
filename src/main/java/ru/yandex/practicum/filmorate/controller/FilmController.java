@@ -24,7 +24,7 @@ public class FilmController {
         return filmService.getFilms();
     }
 
-    @PostMapping
+    @PostMapping()
     public Film addFilm(@RequestBody @Validated Film film) {
         return filmService.addFilm(film);
     }
@@ -73,4 +73,3 @@ public class FilmController {
         return filmService.getDirectorOfTheFilm(id);
     }
 }
-
