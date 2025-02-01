@@ -20,7 +20,6 @@ public class UserController {
     private final FriendsService friendsService;
     private final FilmService filmService;
 
-
     @GetMapping
     public Collection<User> getUsers() {
         return userService.getUsers();

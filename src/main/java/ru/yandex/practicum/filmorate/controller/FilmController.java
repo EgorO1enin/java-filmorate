@@ -4,11 +4,13 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikesService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -16,7 +18,6 @@ import java.util.Collection;
 public class FilmController {
     private final FilmService filmService;
     private final LikesService likesService;
-
 
     @GetMapping
     public Collection<Film> getFilms() {
@@ -28,10 +29,8 @@ public class FilmController {
         return filmService.addFilm(film);
     }
 
-    @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable("id") Long id) {
-        return filmService.getFilm(id);
-    }
+    /*@GetMapping("/{id}")
+    }*/
 
     @PutMapping("/{filmId}/like/{id}")
     public void likeFilm(@PathVariable long filmId, @PathVariable long id) {
@@ -61,5 +60,17 @@ public class FilmController {
     @GetMapping("/common")
     public Collection<Film> getCommonFilms(@RequestParam long userId, @RequestParam long friendId) {
         return filmService.getCommonFilms(userId, friendId);
+        }
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmsByDirector(
+            @PathVariable Long directorId,
+            @RequestParam String sortBy) {
+        return filmService.getFilmsByDirector(directorId, sortBy);
+    }
+
+    @GetMapping("/{id}")
+    public Director getDirectorOfTheFilm(@PathVariable Long id) {
+        return filmService.getDirectorOfTheFilm(id);
     }
 }
+

@@ -2,6 +2,9 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
@@ -13,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class FilmService {
-    private final FilmDbStorageImpl filmDbStorage;
+    private final FilmStorage filmDbStorage;
 
     public Film addFilm(Film film) {
         if (film.getReleaseDate().isBefore((LocalDate.of(1895, 12, 27)))) {
@@ -36,7 +39,7 @@ public class FilmService {
         return film;
     }
 
-    public Collection<Film> getPopularFilms(int count) {
+    public List<Film> getPopularFilms(int count) {
         return filmDbStorage.getPopularFilms(count);
     }
 
@@ -46,6 +49,14 @@ public class FilmService {
 
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         return filmDbStorage.getCommonFilms(userId, friendId);
+    }
+
+    public List<Film> getFilmsByDirector(Long dirId, String SortBy){
+        return filmDbStorage.getFilmsByDirector(dirId, SortBy);
+    }
+
+    public Director getDirectorOfTheFilm(Long filmId) {
+        return filmDbStorage.getDirectorOfTheFilm(filmId);
     }
 
     public List<Film> getUserRecommendations(Long userId) {
