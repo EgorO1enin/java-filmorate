@@ -6,15 +6,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
-
-import java.util.*;
-
 import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor

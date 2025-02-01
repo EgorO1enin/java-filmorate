@@ -58,7 +58,7 @@ public class UserDbStorageImpl implements UserStorage {
     }
 
     @Override
-    public User updateUser(User updatedUser) {
+    public void updateUser(User updatedUser) {
         if (getUserById(updatedUser.getId()) != null) {
             String sqlQuery = "UPDATE users SET " +
                     "email = ?, " +
@@ -72,7 +72,6 @@ public class UserDbStorageImpl implements UserStorage {
                     updatedUser.getName(),
                     updatedUser.getBirthday(),
                     updatedUser.getId());
-            return updatedUser;
         } else {
             throw new NotFoundException("Пользователь с ID=" + updatedUser.getId() + " не найден!");
         }
