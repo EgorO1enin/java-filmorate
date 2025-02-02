@@ -25,6 +25,10 @@ public interface FilmStorage {
 
     List<Film> getFilmsByDirector(Long directorId, String sortBy);
 
+    List<Film> getCommonFilms(Long userId, Long friendId);
+
+    Integer getLikesCount(Film film);
+
     Director getDirectorOfTheFilm(Long id);
 
     void removeFilm(long id);

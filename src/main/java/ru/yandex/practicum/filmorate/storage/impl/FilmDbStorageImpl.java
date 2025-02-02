@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmRowMapper;
-import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -44,16 +43,6 @@ public class FilmDbStorageImpl implements FilmStorage {
     private final DirectorService directorService;
     private final UserService userService;
 
-    public FilmDbStorageImpl(final JdbcTemplate jdbcTemplate, LikesDbStorageImpl likeDbStorage, GenreDbStorageImpl genreDbStorage, MpaService mpaService, GenreService genreService, FilmRowMapper filmRowMapper, FilmRowMapper rowMapper, UserService userService) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.likeDbStorage = likeDbStorage;
-        this.genreDbStorage = genreDbStorage;
-        this.mpaService = mpaService;
-        this.genreService = genreService;
-        this.filmRowMapper = filmRowMapper;
-        this.rowMapper = rowMapper;
-        this.userService = userService;
-    }
 
     @Transactional
     public Film addFilm(Film film) {
@@ -284,6 +273,7 @@ public class FilmDbStorageImpl implements FilmStorage {
                         directorService.getDirectorById(directorId)));
     }
 
+    @Override
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         User firstUser = userService.getUserById(userId);
         User lastUser = userService.getUserById(friendId);
@@ -301,6 +291,7 @@ public class FilmDbStorageImpl implements FilmStorage {
                 .toList();
     }
 
+    @Override
     public Integer getLikesCount(Film film) {
         String sql = "SELECT COUNT(film_id) FROM film_likes WHERE film_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, film.getId());
