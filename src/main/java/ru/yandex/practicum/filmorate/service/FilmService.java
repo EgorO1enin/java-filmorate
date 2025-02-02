@@ -38,6 +38,8 @@ public class FilmService {
 
     public List<Film> getPopularFilms(int count) {
         return filmDbStorage.getPopularFilms(count);
+    public Collection<Film> getPopularFilms(int count, Long genreId, Integer year) {
+        return filmDbStorage.getPopularFilms(count, genreId, year);
     }
 
     public void removeFilm(long id) {

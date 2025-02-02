@@ -97,6 +97,7 @@ public class FilmDbStorageImpl implements FilmStorage {
                 getFilmGenres(rs.getLong("id")),
                 getDirectorOfTheFilm(rs.getLong("id"))) // Р’РѕР·РІСЂР°С‰Р°РµРј null, РµСЃР»Рё director_id РїСѓСЃС‚РѕР№
         );
+                getFilmGenres(rs.getLong("id"))));
     }
 
     @Override
@@ -233,6 +234,25 @@ public class FilmDbStorageImpl implements FilmStorage {
     }
 
     @Override
+    public List<Film> getPopularFilms(int count, Long genreId, Integer year) {
+        String sql = "SELECT f.* FROM films f " +
+                "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
+                "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
+                "WHERE (? IS NULL OR fg.genre_id = ?) " +
+                "AND (? IS NULL OR EXTRACT(YEAR FROM f.release_date) = ?) " +
+                "GROUP BY f.id " +
+                "ORDER BY COUNT(fl.user_id) DESC " +
+                "LIMIT ?";
+
+        return jdbcTemplate.query(sql, filmRowMapper, genreId, genreId, year, year, count);
+    }
+
+    public Set<Genre> getFilmGenres(Long filmId) {
+        String sql = "SELECT genre_id, name FROM film_genres " +
+                "INNER JOIN genres ON genre_id = id WHERE film_id = ?";
+        return new HashSet<>(jdbcTemplate.query(sql, (rs, rowNum) ->
+                new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
+    @Override
     public LinkedHashSet<Genre> getFilmGenres(Long filmId) {
         String sql = "SELECT genre_id, name FROM film_genres" +
                 " INNER JOIN genres ON genre_id = id WHERE film_id = ?";
@@ -345,6 +365,12 @@ public class FilmDbStorageImpl implements FilmStorage {
         String sql = "SELECT COUNT(film_id) FROM film_likes WHERE film_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, film.getId());
     }
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        String sql = "SELECT f.* FROM films f " +
+                "JOIN film_likes fl1 ON f.id = fl1.film_id AND fl1.user_id = ? " +
+                "JOIN film_likes fl2 ON f.id = fl2.film_id AND fl2.user_id = ? " +
+                "GROUP BY f.id " +
+                "ORDER BY COUNT(fl1.film_id) DESC";
 
     @Override
     public List<Director> getDirectorOfTheFilm(Long filmId) {
@@ -384,3 +410,7 @@ public class FilmDbStorageImpl implements FilmStorage {
 }
 
 
+
+        return jdbcTemplate.query(sql, filmRowMapper, userId, friendId);
+    }
+}
