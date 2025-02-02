@@ -100,7 +100,6 @@ public class FilmDbStorageImpl implements FilmStorage {
     }
 
 
-
     @Override
     public List<Film> getFilms() {
         String sql = "SELECT * FROM films";

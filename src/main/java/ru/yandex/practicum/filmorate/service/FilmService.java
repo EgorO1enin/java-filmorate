@@ -49,7 +49,7 @@ public class FilmService {
         return filmDbStorage.getCommonFilms(userId, friendId);
     }
 
-    public List<Film> getFilmsByDirector(Long dirId, String SortBy){
+    public List<Film> getFilmsByDirector(Long dirId, String SortBy) {
         return filmDbStorage.getFilmsByDirector(dirId, SortBy);
     }
 
