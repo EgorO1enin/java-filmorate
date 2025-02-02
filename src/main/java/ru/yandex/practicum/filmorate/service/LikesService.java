@@ -21,11 +21,13 @@ public class LikesService {
     public void addLike(Long userId, Long filmId) {
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.ADD, filmId);
         likesDbStorage.likeFilmByuser(userId, filmId);
+        userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.ADD, filmId);
     }
 
     public void removeLike(Long userId, Long filmId) {
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.REMOVE, filmId);
         likesDbStorage.deleteLike(userId, filmId);
+        userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.REMOVE, filmId);
     }
 
     public List<Long> getLikes(Long filmId) {
