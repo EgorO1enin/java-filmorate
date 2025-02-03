@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -46,5 +46,9 @@ public class FilmService {
 
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         return filmDbStorage.getCommonFilms(userId, friendId);
+    }
+
+    public List<Film> getUserRecommendations(Long userId) {
+        return filmDbStorage.getUserRecommendations(userId);
     }
 }
