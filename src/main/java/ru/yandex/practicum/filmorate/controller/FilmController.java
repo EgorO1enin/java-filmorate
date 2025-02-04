@@ -70,8 +70,4 @@ public class FilmController {
         return filmService.getFilmsByDirector(directorId, sortBy);
     }
 
-   /* @GetMapping("/{filmId}/1")
-    public List<Director> getDirectorOfTheFilm(@PathVariable Long filmId) {
-        return filmService.getDirectorOfTheFilm(filmId);
-    }*/
 }

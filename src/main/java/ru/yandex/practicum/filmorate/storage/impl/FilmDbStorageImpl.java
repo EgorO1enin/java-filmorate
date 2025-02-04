@@ -45,7 +45,6 @@ public class FilmDbStorageImpl implements FilmStorage {
     private final DirectorDbStorageImpl directorDbStorageImpl;
 
 
-    @Transactional
     public Film addFilm(Film film) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films")

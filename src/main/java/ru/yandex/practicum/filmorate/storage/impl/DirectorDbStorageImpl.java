@@ -3,15 +3,17 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -45,23 +47,30 @@ public class DirectorDbStorageImpl implements DirectorStorage {
         return director;
     }
 
-    @Transactional
-    public Director addDirector(Director director) {
-        if (director.getName() == null || director.getName().isEmpty() || director.getName().isBlank()) {
-            throw new ValidationException("Имя режиссера не может быть пустым!");
+
+    @Override
+    public Director addDirector (Director director) {
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("directors")
+                .usingGeneratedKeyColumns("id");
+
+        // Подготовка данных для добавления фильма
+        Map<String, Object> directorData = new HashMap<>();
+        directorData.put("name", director.getName());
+        try {
+            // Добавление фильма и получение его ID
+            long filmId = simpleJdbcInsert.executeAndReturnKey(directorData).longValue();
+            director.setId(filmId);
+            return director;
+        } catch (Exception e) {
+            throw new NotFoundException("Ошибка при добавлении режисера : " + e.getMessage());
         }
-
-        // Получаем максимальный существующий ID
-        String sqlGetMaxId = "SELECT COALESCE(MAX(id), 0) + 1 FROM directors";
-        Long newId = jdbcTemplate.queryForObject(sqlGetMaxId, Long.class);
-
-        // Добавляем запись с новым ID
-        String sqlInsert = "INSERT INTO directors (id, name) VALUES (?, ?)";
-        jdbcTemplate.update(sqlInsert, newId, director.getName());
-
-        director.setId(newId);
-        return director;
     }
+
+
+
+
+
 
 
     @Override
