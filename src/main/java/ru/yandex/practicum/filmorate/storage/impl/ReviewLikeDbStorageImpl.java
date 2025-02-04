@@ -87,7 +87,7 @@ public class ReviewLikeDbStorageImpl implements ReviewLikeStorage {
         if (reviewService.getReviewById(reviewId) != null) {
             String sql = "SELECT useful FROM reviews WHERE id = ?";
             List<Long> useful = jdbcTemplate.queryForList(sql, Long.class, reviewId);
-            return useful.get(0);
+            return useful.getFirst();
         } else {
             throw new NotFoundException("Отзыв с ID=" + reviewId + " не найден!");
         }
