@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -13,6 +14,6 @@ public class Feed {
     private LocalDateTime timeStamp;
     private long userId;
     private EventType eventType;
-    private OperationEvent  operation;
+    private OperationEvent operation;
     private long entityId;
 }

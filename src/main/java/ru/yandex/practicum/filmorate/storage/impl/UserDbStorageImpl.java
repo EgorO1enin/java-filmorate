@@ -6,19 +6,17 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FeedRowMapper;
+import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.OperationEvent;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
-import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -104,7 +102,7 @@ public class UserDbStorageImpl implements UserStorage {
         User newUser = getUserById(id);
         if (newUser != null) {
             String sqlQuery = "SELECT * FROM feed WHERE user_id = ?";
-            List<Feed> feeds = jdbcTemplate.query(sqlQuery,feedRowMapper,id);
+            List<Feed> feeds = jdbcTemplate.query(sqlQuery, feedRowMapper, id);
             return feeds;
         } else {
             throw new NotFoundException("Пользователь с ID=" + id + " не найден!");

@@ -18,6 +18,8 @@ public interface UserStorage {
     User updateUser(User updatedUser);
 
     void removeUser(long id);
-    public List<Feed> getFeed(long id);
-    public void addFeed(long userId, EventType eventType, OperationEvent operationEvent, long entityId);
+
+    List<Feed> getFeed(long id);
+
+    void addFeed(long userId, EventType eventType, OperationEvent operationEvent, long entityId);
 }
