@@ -40,7 +40,7 @@ public class FilmController {
     @DeleteMapping("/{filmId}/like/{id}")
     public void removeLikeFilm(@PathVariable long filmId, @PathVariable long id) {
         likesService.removeLike(filmId, id);
-    }
+    }//
 
     @PutMapping
     public Film updateFilm(@RequestBody @Validated Film updatedFilm) {
