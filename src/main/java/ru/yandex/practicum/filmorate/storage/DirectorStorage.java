@@ -14,4 +14,6 @@ public interface DirectorStorage {
     Director updateDirector(Director director);
 
     void deleteDirector(Long id);
+
+    void addFilmDirector(Long filmId, Long directorId);
 }

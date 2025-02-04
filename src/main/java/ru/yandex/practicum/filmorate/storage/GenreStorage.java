@@ -3,8 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.util.List;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 public interface GenreStorage {
     void addGenere(Film film);
@@ -13,9 +12,9 @@ public interface GenreStorage {
 
     Genre getGenreById(Long genreId);
 
-    List<Genre> getAllGenres();
+    LinkedHashSet<Genre> getAllGenres();
 
     void deleteGenre(Film film);
 
-    Set<Genre> getFilmGenres(Long genreId);
+    LinkedHashSet<Genre> getFilmGenres(Long genreId);
 }

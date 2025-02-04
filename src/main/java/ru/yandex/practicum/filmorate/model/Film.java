@@ -8,7 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +24,6 @@ public class Film {
     @Min(value = 1, message = "Количество минут фильма должно быть больше нуля")
     private int duration;
     private Mpa mpa;
-    private Set<Genre> genres;
-    private Director director;
+    private LinkedHashSet<Genre> genres;
+    private List<Director> directors;
 }

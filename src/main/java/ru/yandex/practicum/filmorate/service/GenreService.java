@@ -5,8 +5,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.impl.GenreDbStorageImpl;
 
-import java.util.List;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 @Service
 public class GenreService {
@@ -16,7 +15,7 @@ public class GenreService {
         this.genreDbStorage = genreDbStorage;
     }
 
-    public List<Genre> getAllGenres() {
+    public LinkedHashSet<Genre> getAllGenres() {
         return genreDbStorage.getAllGenres();
     }
 
@@ -32,7 +31,7 @@ public class GenreService {
         genreDbStorage.deleteGenre(film);
     }
 
-    public Set<Genre> getFilmGenres(Long filmId) {
+    public LinkedHashSet<Genre> getFilmGenres(Long filmId) {
         return genreDbStorage.getFilmGenres(filmId);
 
     }

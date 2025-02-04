@@ -3,16 +3,15 @@ package ru.yandex.practicum.filmorate.storage.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -46,22 +45,24 @@ public class DirectorDbStorageImpl implements DirectorStorage {
         return director;
     }
 
-    @Override
+    @Transactional
     public Director addDirector(Director director) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("directors")
-                .usingGeneratedKeyColumns("id");
-        Map<String, Object> filmData = Map.of(
-                "name", director.getName()
-        );
-        try {
-            long directorId = simpleJdbcInsert.executeAndReturnKey(filmData).longValue();
-            director.setId(directorId);
-            return director;
-        } catch (Exception e) {
-            throw new NotFoundException("Ошибка при добавлении Режисера");
+        if (director.getName() == null || director.getName().isEmpty() || director.getName().isBlank()) {
+            throw new ValidationException("Имя режиссера не может быть пустым!");
         }
+
+        // Получаем максимальный существующий ID
+        String sqlGetMaxId = "SELECT COALESCE(MAX(id), 0) + 1 FROM directors";
+        Long newId = jdbcTemplate.queryForObject(sqlGetMaxId, Long.class);
+
+        // Добавляем запись с новым ID
+        String sqlInsert = "INSERT INTO directors (id, name) VALUES (?, ?)";
+        jdbcTemplate.update(sqlInsert, newId, director.getName());
+
+        director.setId(newId);
+        return director;
     }
+
 
     @Override
     public Director updateDirector(Director director) {
@@ -82,17 +83,19 @@ public class DirectorDbStorageImpl implements DirectorStorage {
     @Override
     public void deleteDirector(Long id) {
         // Проверяем, существует ли директор с данным ID
-        if (getDirectorById(id) != null) {
-            // Сначала обновляем записи в таблице films, устанавливая director_id в NULL
-            String updateQuery = "UPDATE films SET director_id = NULL WHERE director_id = ?;";
-            jdbcTemplate.update(updateQuery, id);
-
+        Director director = getDirectorById(id);
+        if (director != null) {
             // Затем удаляем запись из таблицы directors
-            String deleteQuery = "DELETE FROM directors WHERE id = ?;";
+            String deleteQuery = "DELETE FROM directors WHERE id = ?";
             jdbcTemplate.update(deleteQuery, id);
         } else {
             throw new NotFoundException("Директор с ID=" + id + " не найден!");
         }
     }
 
+    @Override
+    public void addFilmDirector(Long filmId, Long directorId) {
+        String sql = "INSERT INTO film_directors (film_id, director_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, filmId, directorId);
+    }
 }

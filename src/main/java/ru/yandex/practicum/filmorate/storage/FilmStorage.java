@@ -5,8 +5,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public interface FilmStorage {
     Film addFilm(Film film);
@@ -17,7 +17,7 @@ public interface FilmStorage {
 
     Film getFilm(Long id);
 
-    Set<Genre> getFilmGenres(Long filmId);
+    LinkedHashSet<Genre> getFilmGenres(Long filmId);
 
     Mpa getRatingById(Integer rId);
 
@@ -29,7 +29,7 @@ public interface FilmStorage {
 
     Integer getLikesCount(Film film);
 
-    Director getDirectorOfTheFilm(Long id);
+    List<Director> getDirectorOfTheFilm(Long id);
 
     void removeFilm(long id);
 }

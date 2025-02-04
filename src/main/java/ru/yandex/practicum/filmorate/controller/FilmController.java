@@ -4,7 +4,6 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikesService;
@@ -22,6 +21,11 @@ public class FilmController {
     @GetMapping
     public Collection<Film> getFilms() {
         return filmService.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable long id) {
+        return filmService.getFilm(id);
     }
 
     @PostMapping()
@@ -45,7 +49,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopularFilms(count);
     }
 
@@ -66,8 +70,8 @@ public class FilmController {
         return filmService.getFilmsByDirector(directorId, sortBy);
     }
 
-    @GetMapping("/{id}")
-    public Director getDirectorOfTheFilm(@PathVariable Long id) {
-        return filmService.getDirectorOfTheFilm(id);
-    }
+   /* @GetMapping("/{filmId}/1")
+    public List<Director> getDirectorOfTheFilm(@PathVariable Long filmId) {
+        return filmService.getDirectorOfTheFilm(filmId);
+    }*/
 }

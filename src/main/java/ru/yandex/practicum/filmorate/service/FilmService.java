@@ -53,7 +53,7 @@ public class FilmService {
         return filmDbStorage.getFilmsByDirector(dirId, sortBy);
     }
 
-    public Director getDirectorOfTheFilm(Long filmId) {
+    public List<Director> getDirectorOfTheFilm(Long filmId) {
         return filmDbStorage.getDirectorOfTheFilm(filmId);
     }
 
