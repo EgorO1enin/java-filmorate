@@ -20,7 +20,7 @@ public class User {
     @NotBlank(message = "Логин не должен быть пустым")
     private String login;
     private String name;
-    @PastOrPresent(message = "Дата рождения не может позже сегоднешнего дня")
+    @PastOrPresent(message = "Дата рождения не может быть позже сегодняшнего дня")
     private LocalDate birthday;
 
     public Map<String, Object> toMap() {
