@@ -15,6 +15,10 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
+    List<Director> getDirectorsByFilmId(Long filmId);
+
+    void updateFilmDirectors(Long filmId, List<Director> directors);
+
     Film getFilm(Long id);
 
     LinkedHashSet<Genre> getFilmGenres(Long filmId);

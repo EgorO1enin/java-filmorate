@@ -49,7 +49,7 @@ public class DirectorDbStorageImpl implements DirectorStorage {
 
 
     @Override
-    public Director addDirector (Director director) {
+    public Director addDirector(Director director) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("directors")
                 .usingGeneratedKeyColumns("id");
@@ -66,12 +66,6 @@ public class DirectorDbStorageImpl implements DirectorStorage {
             throw new NotFoundException("Ошибка при добавлении режисера : " + e.getMessage());
         }
     }
-
-
-
-
-
-
 
     @Override
     public Director updateDirector(Director director) {
@@ -106,5 +100,11 @@ public class DirectorDbStorageImpl implements DirectorStorage {
     public void addFilmDirector(Long filmId, Long directorId) {
         String sql = "INSERT INTO film_directors (film_id, director_id) VALUES (?, ?)";
         jdbcTemplate.update(sql, filmId, directorId);
+    }
+
+    @Override
+    public void deleteDirectorsByFilmId(Long filmId) {
+        String sqlQuery = "DELETE FROM film_directors WHERE film_id = ?";
+        jdbcTemplate.update(sqlQuery, filmId);
     }
 }
