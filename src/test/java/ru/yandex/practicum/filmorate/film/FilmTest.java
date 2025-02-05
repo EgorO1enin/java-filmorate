@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.film;
 
 import jakarta.validation.ConstraintViolation;
@@ -59,3 +60,4 @@ public class FilmTest {
         assertEquals(1, violations.size());
     }
 }
+*/

@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikesService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -17,20 +18,19 @@ public class FilmController {
     private final FilmService filmService;
     private final LikesService likesService;
 
-
     @GetMapping
     public Collection<Film> getFilms() {
         return filmService.getFilms();
     }
 
-    @PostMapping
-    public Film addFilm(@RequestBody @Validated Film film) {
-        return filmService.addFilm(film);
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable long id) {
+        return filmService.getFilm(id);
     }
 
-    @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable("id") Long id) {
-        return filmService.getFilm(id);
+    @PostMapping()
+    public Film addFilm(@RequestBody @Validated Film film) {
+        return filmService.addFilm(film);
     }
 
     @PutMapping("/{filmId}/like/{id}")
@@ -49,7 +49,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopularFilms(count);
     }
 
@@ -62,4 +62,12 @@ public class FilmController {
     public Collection<Film> getCommonFilms(@RequestParam long userId, @RequestParam long friendId) {
         return filmService.getCommonFilms(userId, friendId);
     }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmsByDirector(
+            @PathVariable Long directorId,
+            @RequestParam String sortBy) {
+        return filmService.getFilmsByDirector(directorId, sortBy);
+    }
+
 }

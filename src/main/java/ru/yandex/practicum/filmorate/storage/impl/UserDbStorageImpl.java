@@ -72,10 +72,10 @@ public class UserDbStorageImpl implements UserStorage {
                     updatedUser.getName(),
                     updatedUser.getBirthday(),
                     updatedUser.getId());
-            return updatedUser;
         } else {
             throw new NotFoundException("Пользователь с ID=" + updatedUser.getId() + " не найден!");
         }
+        return updatedUser;
     }
 
     @Override

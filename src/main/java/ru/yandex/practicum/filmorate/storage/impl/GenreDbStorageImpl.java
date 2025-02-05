@@ -10,9 +10,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.LinkedHashSet;
+
 
 @RequiredArgsConstructor
 @Component
@@ -55,8 +54,8 @@ public class GenreDbStorageImpl implements GenreStorage {
     }
 
     @Override
-    public List<Genre> getAllGenres() {
-        List<Genre> genres = new ArrayList<>();
+    public LinkedHashSet<Genre> getAllGenres() {
+        LinkedHashSet<Genre> genres = new LinkedHashSet<>();
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM genres ORDER BY id");
         while (genreRows.next()) {
             genres.add(new Genre(genreRows.getLong("id"), genreRows.getString("name")));
@@ -69,9 +68,9 @@ public class GenreDbStorageImpl implements GenreStorage {
         jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?", film.getId());
     }
 
-    public Set<Genre> getFilmGenres(Long genreId) {
+    public LinkedHashSet<Genre> getFilmGenres(Long genreId) {
         String sql = "SELECT * FROM film_genres WHERE genre_id = ?";
-        return (Set<Genre>) jdbcTemplate.query(sql, (rs, rowNum) -> new Genre(
+        return (LinkedHashSet<Genre>) jdbcTemplate.query(sql, (rs, rowNum) -> new Genre(
                         rs.getLong("id"),
                         rs.getString("name")),
                 genreId);
