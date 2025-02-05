@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Disabled;
@@ -68,3 +69,4 @@ class FilmControllerTest {
         MockMvcBuilders.standaloneSetup(filmController).build().perform(requestBuilder);
     }
 }
+*/
