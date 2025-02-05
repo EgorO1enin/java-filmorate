@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 public class Feed {
     private long eventId;
-    private LocalDateTime timeStamp;
+    private long timestamp;
     private long userId;
     private EventType eventType;
     private OperationEvent operation;

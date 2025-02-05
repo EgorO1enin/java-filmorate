@@ -8,6 +8,8 @@ import ru.yandex.practicum.filmorate.model.OperationEvent;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Component
 public class FeedRowMapper implements RowMapper<Feed> {
@@ -15,7 +17,9 @@ public class FeedRowMapper implements RowMapper<Feed> {
     public Feed mapRow(ResultSet rs, int rowNum) throws SQLException {
         Feed feed = new Feed();
         feed.setEventId(rs.getLong("event_id"));
-        feed.setTimeStamp(rs.getTimestamp("timestamp").toLocalDateTime());
+        LocalDateTime now = rs.getTimestamp("timestamp").toLocalDateTime();
+        long timestamp = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        feed.setTimestamp(timestamp);
         feed.setUserId(rs.getLong("user_id"));
         feed.setEventType(EventType.valueOf(rs.getString("event_type")));
         feed.setOperation(OperationEvent.valueOf(rs.getString("operation")));

@@ -25,13 +25,15 @@ public class ReviewService {
     }
 
     public Review addReview(Review review) {
-        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.ADD, review.getReviewId());
-        return reviewStorage.addReview(review);
+        Review newReview = reviewStorage.addReview(review);
+        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.ADD, newReview.getReviewId());
+        return newReview;
     }
 
     public Review updateReview(Review review) {
-        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.UPDATE, review.getReviewId());
-        return reviewStorage.updateReview(review);
+        Review newReview = reviewStorage.updateReview(review);
+        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.UPDATE, newReview.getReviewId());
+        return newReview;
     }
 
     public void removeReview(Long reviewId) {
