@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class FilmService {
-    private final FilmStorage filmDbStorage;
+    private final FilmDbStorageImpl filmDbStorage;
 
     public Film addFilm(Film film) {
         if (film.getReleaseDate().isBefore((LocalDate.of(1895, 12, 27)))) {
