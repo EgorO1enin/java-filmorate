@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,8 +37,8 @@ public class FilmService {
         return film;
     }
 
-    public List<Film> getPopularFilms(int count) {
-        return filmDbStorage.getPopularFilms(count);
+    public Collection<Film> getPopularFilms(int count, Long genreId, Integer year) {
+        return filmDbStorage.getPopularFilms(count, genreId, year);
     }
 
     public void removeFilm(long id) {

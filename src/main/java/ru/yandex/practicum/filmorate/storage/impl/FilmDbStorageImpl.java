@@ -260,30 +260,48 @@ public class FilmDbStorageImpl implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopularFilms(int count) {
-        String sql = "SELECT f.*, m.NAME AS mpa_name, fl.LIKES " +
-                "FROM FILMS f " +
-                "LEFT JOIN RATINGS_MPA m ON f.RATING_ID = m.ID " +
-                "LEFT JOIN (SELECT FILM_ID, COUNT(FILM_ID) AS LIKES FROM FILM_LIKES GROUP BY FILM_ID) fl " +
-                "ON f.ID = fl.FILM_ID " +
-                "ORDER BY LIKES DESC NULLS LAST LIMIT ?";
+    public List<Film> getPopularFilms(int count, Long genreId, Integer year) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id, " +
+                        "COALESCE(COUNT(DISTINCT fl.user_id), 0) AS like_count " +
+                        "FROM films f " +
+                        "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
+                        "LEFT JOIN film_genres fg ON f.id = fg.film_id ");
 
-        return jdbcTemplate.query(sql, new Object[]{count}, (rs, rowNum) -> {
-            Mpa mpa = getRatingById(rs.getInt("rating_id"));
-            LinkedHashSet<Genre> genres = getFilmGenres(rs.getLong("id"));
-            List<Director> directors = getDirectorOfTheFilm(rs.getLong("id")); // Р’РѕР·РІСЂР°С‰Р°РµРј null, РµСЃР»Рё director_id РїСѓСЃС‚РѕР№
+        List<Object> params = new ArrayList<>();
+        boolean whereAdded = false;
 
-            return new Film(
+        if (genreId != null) {
+            sql.append(" WHERE fg.genre_id = ?");
+            params.add(genreId);
+            whereAdded = true;
+        }
+
+        if (year != null) {
+            sql.append(whereAdded ? " AND " : " WHERE ");
+            sql.append("EXTRACT(YEAR FROM f.release_date) = ?");
+            params.add(year);
+        }
+
+        sql.append(" GROUP BY f.id, f.name, f.description, f.release_date, f.duration, f.rating_id ");
+        sql.append(" ORDER BY like_count DESC LIMIT ?");
+        params.add(count);
+
+        try {
+            return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> new Film(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("description"),
                     rs.getDate("release_date").toLocalDate(),
                     rs.getInt("duration"),
-                    mpa,
-                    genres,
-                    directors
-            );
-        });
+                    new Mpa(rs.getLong("rating_id"), ""),
+                    new LinkedHashSet<>(),
+                    getDirectorOfTheFilm(rs.getLong("id"))
+            ), params.toArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка получения популярных фильмов: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -382,5 +400,4 @@ public class FilmDbStorageImpl implements FilmStorage {
                 .toList();
     }
 }
-
 
