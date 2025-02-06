@@ -80,7 +80,7 @@ public class FilmDbStorageImpl implements FilmStorage {
 
             return film;
         } catch (Exception e) {
-            throw new NotFoundException("Ошибка при добавлении фильма: " + e.getMessage());
+            throw new NotFoundException("Ошибка при добавлении фильма");
         }
     }
 
@@ -235,16 +235,46 @@ public class FilmDbStorageImpl implements FilmStorage {
 
     @Override
     public List<Film> getPopularFilms(int count, Long genreId, Integer year) {
-        String sql = "SELECT f.* FROM films f " +
-                "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
-                "LEFT JOIN film_genres fg ON f.id = fg.film_id " +
-                "WHERE (? IS NULL OR fg.genre_id = ?) " +
-                "AND (? IS NULL OR EXTRACT(YEAR FROM f.release_date) = ?) " +
-                "GROUP BY f.id " +
-                "ORDER BY COUNT(fl.user_id) DESC " +
-                "LIMIT ?";
+        StringBuilder sql = new StringBuilder(
+                "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id, " +
+                        "COALESCE(COUNT(DISTINCT fl.user_id), 0) AS like_count " +
+                        "FROM films f " +
+                        "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
+                        "LEFT JOIN film_genres fg ON f.id = fg.film_id ");
 
-        return jdbcTemplate.query(sql, filmRowMapper, genreId, genreId, year, year, count);
+        List<Object> params = new ArrayList<>();
+        boolean whereAdded = false;
+
+        if (genreId != null) {
+            sql.append(" WHERE fg.genre_id = ?");
+            params.add(genreId);
+            whereAdded = true;
+        }
+
+        if (year != null) {
+            sql.append(whereAdded ? " AND " : " WHERE ");
+            sql.append("EXTRACT(YEAR FROM f.release_date) = ?");
+            params.add(year);
+        }
+
+        sql.append(" GROUP BY f.id, f.name, f.description, f.release_date, f.duration, f.rating_id ");
+        sql.append(" ORDER BY like_count DESC LIMIT ?");
+        params.add(count);
+
+        try {
+            return jdbcTemplate.query(sql.toString(), (rs, rowNum) -> new Film(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getDate("release_date").toLocalDate(),
+                    rs.getInt("duration"),
+                    new Mpa(rs.getLong("rating_id"), ""), // Заглушка, так как getRatingById нельзя менять
+                    new HashSet<>() // Заглушка для жанров, так как getFilmGenres нельзя менять
+            ), params.toArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка получения популярных фильмов: " + e.getMessage(), e);
+        }
     }
 
     public Set<Genre> getFilmGenres(Long filmId) {
@@ -366,12 +396,20 @@ public class FilmDbStorageImpl implements FilmStorage {
         return jdbcTemplate.queryForObject(sql, Integer.class, film.getId());
     }
     public List<Film> getCommonFilms(Long userId, Long friendId) {
-        String sql = "SELECT f.* FROM films f " +
-                "JOIN film_likes fl1 ON f.id = fl1.film_id AND fl1.user_id = ? " +
-                "JOIN film_likes fl2 ON f.id = fl2.film_id AND fl2.user_id = ? " +
-                "GROUP BY f.id " +
-                "ORDER BY COUNT(fl1.film_id) DESC";
+        User firstUser = userService.getUserById(userId);
+        User lastUser = userService.getUserById(friendId);
+        if (firstUser == null || lastUser == null) {
+            throw new ValidationException("First User or Second User not found");
+        }
 
+        String sql = "SELECT film_id FROM film_likes WHERE user_id = ?";
+        List<Long> usersFilms = jdbcTemplate.queryForList(sql, Long.class, userId);
+        List<Long> friendsFilms = jdbcTemplate.queryForList(sql, Long.class, friendId);
+        return usersFilms.stream()
+                .filter(friendsFilms::contains)
+                .map(this::getFilm)
+                .sorted(Comparator.comparing(this::getLikesCount).reversed())
+                .toList();
     @Override
     public List<Director> getDirectorOfTheFilm(Long filmId) {
         String sql = "SELECT director_id, name FROM film_directors" +
