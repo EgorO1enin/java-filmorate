@@ -111,6 +111,9 @@ public class UserDbStorageImpl implements UserStorage {
 
     @Override
     public void addFeed(long userId, EventType eventType, OperationEvent operationEvent, long entityId) {
+        if (getUserById(userId) == null) {
+            throw new NotFoundException("Пользователь с ID=" + userId + " не найден!");
+        }
         LocalDateTime timestamp = LocalDateTime.now();
         String sqlQuery = "INSERT INTO feed (timestamp, user_id, event_type, operation, entity_id) "
                 + "VALUES (?, ?, ?, ?, ?)";

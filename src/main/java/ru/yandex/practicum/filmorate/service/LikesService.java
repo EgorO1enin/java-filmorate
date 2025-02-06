@@ -18,15 +18,13 @@ public class LikesService {
         this.userDbStorage = userDbStorage;
     }
 
-    public void addLike(Long userId, Long filmId) {
-        userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.ADD, filmId);
-        likesDbStorage.likeFilmByuser(userId, filmId);
+    public void addLike(Long filmId, Long userId) {
+        likesDbStorage.likeFilmByuser(filmId, userId);
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.ADD, filmId);
     }
 
-    public void removeLike(Long userId, Long filmId) {
-        userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.REMOVE, filmId);
-        likesDbStorage.deleteLike(userId, filmId);
+    public void removeLike(Long filmId, Long userId) {
+        likesDbStorage.deleteLike(filmId, userId);
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.REMOVE, filmId);
     }
 
