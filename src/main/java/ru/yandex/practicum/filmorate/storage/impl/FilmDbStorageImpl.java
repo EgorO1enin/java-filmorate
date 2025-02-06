@@ -399,5 +399,9 @@ public class FilmDbStorageImpl implements FilmStorage {
                 .map(this::getFilm)
                 .toList();
     }
+
+    public List<Film> searchFilms(String query, List<String> searchBy) {
+        return null;
+    }
 }
 
