@@ -20,8 +20,8 @@ public class FriendsService {
     private final UserDbStorageImpl userDbStorage;
 
     public User addFriend(Long userid, Long friendId) {
-        friendsDbStorage.addFriend(userid, friendId);
         userDbStorage.addFeed(userid, EventType.FRIEND, OperationEvent.ADD, friendId);
+        friendsDbStorage.addFriend(userid, friendId);
         return userService.getUserById(friendId);
     }
 
@@ -30,8 +30,8 @@ public class FriendsService {
     }
 
     public User removeFriend(Long userid, Long friendId) {
-        friendsDbStorage.removeFriend(userid, friendId);
         userDbStorage.addFeed(userid, EventType.FRIEND, OperationEvent.REMOVE, friendId);
+        friendsDbStorage.removeFriend(userid, friendId);
         return userService.getUserById(friendId);
     }
 

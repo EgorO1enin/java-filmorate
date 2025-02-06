@@ -14,22 +14,22 @@ public class ReviewLikeService {
     private final UserDbStorageImpl userDbStorage;
 
     public void addLike(Long reviewId, Long userId) {
-        reviewLikeStorage.addLike(reviewId, userId);
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.ADD, reviewId);
+        reviewLikeStorage.addLike(reviewId, userId);
     }
 
     public void addDislike(Long reviewId, Long userId) {
-        reviewLikeStorage.addDislike(reviewId, userId);
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.ADD, reviewId);
+        reviewLikeStorage.addDislike(reviewId, userId);
     }
 
     public void removeLike(Long reviewId, Long userId) {
-        reviewLikeStorage.removeLike(reviewId, userId);
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.REMOVE, reviewId);
+        reviewLikeStorage.removeLike(reviewId, userId);
     }
 
     public void removeDislike(Long reviewId, Long userId) {
-        reviewLikeStorage.removeDislike(reviewId, userId);
         userDbStorage.addFeed(userId, EventType.LIKE, OperationEvent.REMOVE, reviewId);
+        reviewLikeStorage.removeDislike(reviewId, userId);
     }
 }
