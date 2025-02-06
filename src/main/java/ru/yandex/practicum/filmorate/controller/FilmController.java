@@ -53,8 +53,6 @@ public class FilmController {
             @RequestParam(required = false) Long genreId,
             @RequestParam(required = false) Integer year) {
         return filmService.getPopularFilms(count, genreId, year);
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getPopularFilms(count);
     }
 
     @DeleteMapping("/{id}")

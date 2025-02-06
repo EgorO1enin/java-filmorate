@@ -80,7 +80,7 @@ public class FilmDbStorageImpl implements FilmStorage {
 
             return film;
         } catch (Exception e) {
-            throw new NotFoundException("Ошибка при добавлении фильма");
+            throw new NotFoundException("Ошибка при добавлении фильма: " + e.getMessage());
         }
     }
 
@@ -97,7 +97,6 @@ public class FilmDbStorageImpl implements FilmStorage {
                 getFilmGenres(rs.getLong("id")),
                 getDirectorOfTheFilm(rs.getLong("id"))) // Р’РѕР·РІСЂР°С‰Р°РµРј null, РµСЃР»Рё director_id РїСѓСЃС‚РѕР№
         );
-                getFilmGenres(rs.getLong("id"))));
     }
 
     @Override
@@ -234,6 +233,33 @@ public class FilmDbStorageImpl implements FilmStorage {
     }
 
     @Override
+    public LinkedHashSet<Genre> getFilmGenres(Long filmId) {
+        String sql = "SELECT genre_id, name FROM film_genres" +
+                " INNER JOIN genres ON genre_id = id WHERE film_id = ?";
+        LinkedHashSet<Genre> genres = new LinkedHashSet<>(jdbcTemplate.query(sql,
+                (rs, rowNum) -> new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
+        return genres;
+    }
+
+    @Override
+    public Mpa getRatingById(Integer rId) {
+        if (rId == null) {
+            throw new ValidationException("Передан пустой аргумент!");
+        }
+        Mpa mpa;
+        SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT * FROM ratings_mpa WHERE id = ?", rId);
+        if (mpaRows.first()) {
+            mpa = new Mpa(
+                    mpaRows.getLong("id"),
+                    mpaRows.getString("name")
+            );
+        } else {
+            throw new NotFoundException("Рейтинг с ID=" + rId + " не найден!");
+        }
+        return mpa;
+    }
+
+    @Override
     public List<Film> getPopularFilms(int count, Long genreId, Integer year) {
         StringBuilder sql = new StringBuilder(
                 "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id, " +
@@ -268,72 +294,14 @@ public class FilmDbStorageImpl implements FilmStorage {
                     rs.getString("description"),
                     rs.getDate("release_date").toLocalDate(),
                     rs.getInt("duration"),
-                    new Mpa(rs.getLong("rating_id"), ""), // Заглушка, так как getRatingById нельзя менять
-                    new HashSet<>() // Заглушка для жанров, так как getFilmGenres нельзя менять
+                    new Mpa(rs.getLong("rating_id"), ""),
+                    new LinkedHashSet<>(),
+                    getDirectorOfTheFilm(rs.getLong("id"))
             ), params.toArray());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Ошибка получения популярных фильмов: " + e.getMessage(), e);
         }
-    }
-
-    public Set<Genre> getFilmGenres(Long filmId) {
-        String sql = "SELECT genre_id, name FROM film_genres " +
-                "INNER JOIN genres ON genre_id = id WHERE film_id = ?";
-        return new HashSet<>(jdbcTemplate.query(sql, (rs, rowNum) ->
-                new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
-    @Override
-    public LinkedHashSet<Genre> getFilmGenres(Long filmId) {
-        String sql = "SELECT genre_id, name FROM film_genres" +
-                " INNER JOIN genres ON genre_id = id WHERE film_id = ?";
-        LinkedHashSet<Genre> genres = new LinkedHashSet<>(jdbcTemplate.query(sql,
-                (rs, rowNum) -> new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
-        return genres;
-    }
-
-    @Override
-    public Mpa getRatingById(Integer rId) {
-        if (rId == null) {
-            throw new ValidationException("Передан пустой аргумент!");
-        }
-        Mpa mpa;
-        SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("SELECT * FROM ratings_mpa WHERE id = ?", rId);
-        if (mpaRows.first()) {
-            mpa = new Mpa(
-                    mpaRows.getLong("id"),
-                    mpaRows.getString("name")
-            );
-        } else {
-            throw new NotFoundException("Рейтинг с ID=" + rId + " не найден!");
-        }
-        return mpa;
-    }
-
-    @Override
-    public List<Film> getPopularFilms(int count) {
-        String sql = "SELECT f.*, m.NAME AS mpa_name, fl.LIKES " +
-                "FROM FILMS f " +
-                "LEFT JOIN RATINGS_MPA m ON f.RATING_ID = m.ID " +
-                "LEFT JOIN (SELECT FILM_ID, COUNT(FILM_ID) AS LIKES FROM FILM_LIKES GROUP BY FILM_ID) fl " +
-                "ON f.ID = fl.FILM_ID " +
-                "ORDER BY LIKES DESC NULLS LAST LIMIT ?";
-
-        return jdbcTemplate.query(sql, new Object[]{count}, (rs, rowNum) -> {
-            Mpa mpa = getRatingById(rs.getInt("rating_id"));
-            LinkedHashSet<Genre> genres = getFilmGenres(rs.getLong("id"));
-            List<Director> directors = getDirectorOfTheFilm(rs.getLong("id")); // Р’РѕР·РІСЂР°С‰Р°РµРј null, РµСЃР»Рё director_id РїСѓСЃС‚РѕР№
-
-            return new Film(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDate("release_date").toLocalDate(),
-                    rs.getInt("duration"),
-                    mpa,
-                    genres,
-                    directors
-            );
-        });
     }
 
     @Override
@@ -395,21 +363,7 @@ public class FilmDbStorageImpl implements FilmStorage {
         String sql = "SELECT COUNT(film_id) FROM film_likes WHERE film_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, film.getId());
     }
-    public List<Film> getCommonFilms(Long userId, Long friendId) {
-        User firstUser = userService.getUserById(userId);
-        User lastUser = userService.getUserById(friendId);
-        if (firstUser == null || lastUser == null) {
-            throw new ValidationException("First User or Second User not found");
-        }
 
-        String sql = "SELECT film_id FROM film_likes WHERE user_id = ?";
-        List<Long> usersFilms = jdbcTemplate.queryForList(sql, Long.class, userId);
-        List<Long> friendsFilms = jdbcTemplate.queryForList(sql, Long.class, friendId);
-        return usersFilms.stream()
-                .filter(friendsFilms::contains)
-                .map(this::getFilm)
-                .sorted(Comparator.comparing(this::getLikesCount).reversed())
-                .toList();
     @Override
     public List<Director> getDirectorOfTheFilm(Long filmId) {
         String sql = "SELECT director_id, name FROM film_directors" +
@@ -447,8 +401,3 @@ public class FilmDbStorageImpl implements FilmStorage {
     }
 }
 
-
-
-        return jdbcTemplate.query(sql, filmRowMapper, userId, friendId);
-    }
-}
