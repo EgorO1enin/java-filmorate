@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.impl.UserDbStorageImpl;
 
@@ -31,4 +32,9 @@ public class UserService {
     public void removeUser(long id) {
         userDbStorage.removeUser(id);
     }
+
+    public List<Feed> getFeed(long id) {
+        return userDbStorage.getFeed(id);
+    }
+
 }
