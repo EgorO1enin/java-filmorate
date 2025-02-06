@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.LikesService;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -73,10 +72,9 @@ public class FilmController {
         return filmService.getFilmsByDirector(directorId, sortBy);
     }
 
-    @GetMapping("/films/search")
-    public List<Film> searchFilms(@RequestParam String query, @RequestParam String by) {
-        List<String> searchBy = Arrays.asList(by.split(","));
-        return filmService.searchFilms(query, searchBy);
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query, @RequestParam List<String> by) {
+        return filmService.searchFilms(query, by);
     }
 
 }

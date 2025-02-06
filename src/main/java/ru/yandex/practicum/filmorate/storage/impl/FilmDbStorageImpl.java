@@ -400,8 +400,68 @@ public class FilmDbStorageImpl implements FilmStorage {
                 .toList();
     }
 
+    @Override
     public List<Film> searchFilms(String query, List<String> searchBy) {
-        return null;
+        StringBuilder sql = new StringBuilder();
+        List<Object> params = new ArrayList<>();
+
+        if (searchBy.contains("title")) {
+            sql.append("SELECT f.id FROM films f WHERE f.name LIKE ? ");
+            params.add("%" + query + "%");
+
+            if (searchBy.contains("director")) {
+                sql.append("UNION ALL ");
+            }
+        }
+
+        if (searchBy.contains("director")) {
+            sql.append("SELECT fd.film_id FROM film_directors fd " +
+                    "JOIN directors d ON fd.director_id = d.id " +
+                    "WHERE d.name LIKE ? ");
+
+            // Если мы уже добавили параметр для поиска по названию,
+            // то добавляем второй параметр в список.
+            if (!params.isEmpty()) {
+                params.add("%" + query + "%");
+                params.add("%" + query + "%"); // Дублируем для второго условия
+                // Чтобы избежать дублирования параметра при UNION ALL,
+                // лучше использовать другой подход или корректировать SQL-запрос.
+                // Например, можно объединить условия в одном запросе:
+
+                String combinedSql = "SELECT DISTINCT f.id FROM films f "
+                        + "LEFT JOIN film_directors fd ON f.id = fd.film_id "
+                        + "LEFT JOIN directors d ON fd.director_id = d.id "
+                        + "WHERE f.name LIKE ? OR d.name LIKE ?";
+
+                return jdbcTemplate.queryForList(combinedSql, Long.class, "%" + query + "%", "%" + query + "%")
+                        .stream()
+                        .map(this::getFilm)
+                        .sorted(Comparator.comparing(this::getLikesCount).reversed())
+                        .toList();
+
+            } else {
+                params.add("%" + query + "%");
+
+                return jdbcTemplate.queryForList(sql.toString(), Long.class, params.toArray())
+                        .stream()
+                        .map(this::getFilm)
+                        .sorted(Comparator.comparing(this::getLikesCount).reversed())
+                        .toList();
+
+            }
+        }
+
+        try {
+            return jdbcTemplate.queryForList(sql.toString(), Long.class, params.toArray())
+                    .stream()
+                    .map(this::getFilm)
+                    .sorted(Comparator.comparing(this::getLikesCount).reversed())
+                    .toList();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка при выполнении поиска фильмов", e);
+        }
     }
+
 }
 
