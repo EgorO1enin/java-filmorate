@@ -60,4 +60,9 @@ public class FilmService {
     public List<Film> getUserRecommendations(Long userId) {
         return filmDbStorage.getUserRecommendations(userId);
     }
+
+    public List<Film> searchFilms(String query, List<String> searchBy) {
+        return filmDbStorage.searchFilms(query, searchBy);
+
+    }
 }

@@ -107,4 +107,5 @@ public class DirectorDbStorageImpl implements DirectorStorage {
         String sqlQuery = "DELETE FROM film_directors WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
+
 }

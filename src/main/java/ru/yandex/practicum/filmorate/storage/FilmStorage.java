@@ -5,8 +5,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.util.List;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public interface FilmStorage {
     Film addFilm(Film film);
@@ -36,4 +36,6 @@ public interface FilmStorage {
     void removeFilm(long id);
 
     List<Film> getPopularFilms(int count, Long genreId, Integer year);
+
+    List<Film> searchFilms(String query, List<String> searchBy);
 }
