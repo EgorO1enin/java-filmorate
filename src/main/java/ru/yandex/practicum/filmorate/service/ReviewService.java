@@ -26,19 +26,19 @@ public class ReviewService {
 
     public Review addReview(Review review) {
         Review newReview = reviewStorage.addReview(review);
-        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.ADD, newReview.getReviewId());
+        userDbStorage.addFeed(newReview.getUserId(), EventType.REVIEW, OperationEvent.ADD, newReview.getReviewId());
         return newReview;
     }
 
     public Review updateReview(Review review) {
         Review newReview = reviewStorage.updateReview(review);
-        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.UPDATE, newReview.getReviewId());
+        userDbStorage.addFeed(newReview.getUserId(), EventType.REVIEW, OperationEvent.UPDATE, newReview.getReviewId());
         return newReview;
     }
 
     public void removeReview(Long reviewId) {
         Review review = reviewStorage.getReviewById(reviewId);
-        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.REMOVE, review.getReviewId());
         reviewStorage.removeReview(reviewId);
+        userDbStorage.addFeed(review.getUserId(), EventType.REVIEW, OperationEvent.REMOVE, review.getReviewId());
     }
 }

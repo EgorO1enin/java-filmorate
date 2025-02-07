@@ -27,9 +27,14 @@ public class ReviewDbStorageImpl implements ReviewStorage {
 
     @Override
     public List<Review> getReviews(Long filmId, int count) {
+        if (filmId == null) {
+            String sql = "SELECT * FROM reviews " +
+                    "ORDER BY useful DESC";
+            return jdbcTemplate.query(sql, reviewRowMapper);
+        }
         String sql = "SELECT * FROM reviews " +
                 "WHERE film_id = ? " +
-                "ORDER BY useful " +
+                "ORDER BY useful DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sql, reviewRowMapper, filmId, count);
     }
@@ -71,25 +76,17 @@ public class ReviewDbStorageImpl implements ReviewStorage {
         if (review == null) {
             throw new ValidationException("Передан пустой аргумент!");
         }
-        if (getReviewById(review.getReviewId()) != null) {
+        Long reviewId = review.getReviewId();
+        if (getReviewById(reviewId) != null) {
             if (review.getUseful() == null) {
                 review.setUseful(0L);
             }
             String sql = "UPDATE reviews SET " +
                     "content = ?, " +
-                    "is_positive = ?, " +
-                    "film_id = ?, " +
-                    "user_id = ?, " +
-                    "useful = ? " +
+                    "is_positive = ? " +
                     "WHERE id = ?";
-            jdbcTemplate.update(sql,
-                    review.getContent(),
-                    review.getIsPositive(),
-                    review.getFilmId(),
-                    review.getUserId(),
-                    review.getUseful(),
-                    review.getReviewId());
-            return review;
+            jdbcTemplate.update(sql, review.getContent(), review.getIsPositive(), reviewId);
+            return getReviewById(reviewId);
         } else {
             throw new NotFoundException("Отзыв с ID=" + review.getReviewId() + " не найден!");
         }

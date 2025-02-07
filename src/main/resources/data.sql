@@ -13,5 +13,3 @@ MERGE INTO genres (id, name)
            (5, 'Документальный'),
            (6, 'Боевик');
 
-MERGE INTO USERS (id, name, EMAIL, LOGIN, BIRTHDAY)
-    VALUES (1000000, 'Иванов Иван Иванович', 'ivanov@mail.ru', 'ivanov', '2000-01-01');

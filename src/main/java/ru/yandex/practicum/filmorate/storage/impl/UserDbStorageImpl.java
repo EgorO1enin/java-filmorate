@@ -62,6 +62,10 @@ public class UserDbStorageImpl implements UserStorage {
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
+        if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            updateUser(user);
+        }
         return user;
     }
 

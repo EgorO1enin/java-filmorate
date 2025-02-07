@@ -63,7 +63,7 @@ public class DirectorDbStorageImpl implements DirectorStorage {
             director.setId(filmId);
             return director;
         } catch (Exception e) {
-            throw new NotFoundException("Ошибка при добавлении режисера : " + e.getMessage());
+            throw new NotFoundException("Ошибка при добавлении режиссера : " + e.getMessage());
         }
     }
 
@@ -107,5 +107,4 @@ public class DirectorDbStorageImpl implements DirectorStorage {
         String sqlQuery = "DELETE FROM film_directors WHERE film_id = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
-
 }
