@@ -31,8 +31,8 @@ public class ReviewLikeDbStorageImpl implements ReviewLikeStorage {
                 "VALUES (?, ?, TRUE)";
         jdbcTemplate.update(sql, reviewId, userId);
         if (getUseful(reviewId) + 1 == 0) {
-            review.setUseful(1L);
-            reviewService.updateReview(review);
+            String updateSql = "UPDATE reviews SET useful = 1 WHERE id = ?";
+            jdbcTemplate.update(updateSql, reviewId);
         } else {
             increaseUseful(reviewId);
         }
@@ -49,11 +49,12 @@ public class ReviewLikeDbStorageImpl implements ReviewLikeStorage {
                 "VALUES (?, ?, FALSE)";
         jdbcTemplate.update(sql, reviewId, userId);
         if (getUseful(reviewId) - 1 == 0) {
-            review.setUseful(-1L);
-            reviewService.updateReview(review);
+            String updateSql = "UPDATE reviews SET useful = - 1 WHERE id = ?";
+            jdbcTemplate.update(updateSql, reviewId);
         } else {
             decreaseUseful(reviewId);
         }
+
     }
 
     @Override
