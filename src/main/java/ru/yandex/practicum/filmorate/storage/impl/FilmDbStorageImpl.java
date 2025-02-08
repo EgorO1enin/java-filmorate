@@ -138,6 +138,8 @@ public class FilmDbStorageImpl implements FilmStorage {
             for (Genre genre : film.getGenres()) {
                 genre.setName(genreService.getGenreById(genre.getId()).getName());
             }
+        } else {
+            film.setGenres(new LinkedHashSet<>());
         }
         genreService.deleteGenere(film);
         genreService.addGenere(film);
@@ -163,6 +165,9 @@ public class FilmDbStorageImpl implements FilmStorage {
             updateFilmDirectors(film.getId(), updatedDirectors);
             // Устанавливаем обновленный список директоров в фильм
             film.setDirectors(updatedDirectors);
+        } else {
+            film.setDirectors(new ArrayList<>());
+            updateFilmDirectors(film.getId(), new ArrayList<>());
         }
     }
 
@@ -216,9 +221,6 @@ public class FilmDbStorageImpl implements FilmStorage {
         } else {
             throw new NotFoundException("Фильм с ID=" + filmId + " не найден!");
         }
-        if (film.getGenres().isEmpty()) {
-            film.setGenres(null);
-        }
         return film;
     }
 
@@ -236,9 +238,8 @@ public class FilmDbStorageImpl implements FilmStorage {
     public LinkedHashSet<Genre> getFilmGenres(Long filmId) {
         String sql = "SELECT genre_id, name FROM film_genres" +
                 " INNER JOIN genres ON genre_id = id WHERE film_id = ?";
-        LinkedHashSet<Genre> genres = new LinkedHashSet<>(jdbcTemplate.query(sql,
-                (rs, rowNum) -> new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
-        return genres;
+        return new LinkedHashSet<>(jdbcTemplate.query(sql, (rs, rowNum) ->
+                new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
     }
 
     @Override
@@ -294,8 +295,8 @@ public class FilmDbStorageImpl implements FilmStorage {
                     rs.getString("description"),
                     rs.getDate("release_date").toLocalDate(),
                     rs.getInt("duration"),
-                    new Mpa(rs.getLong("rating_id"), ""),
-                    new LinkedHashSet<>(),
+                    getRatingById(rs.getInt("rating_id")),
+                    getFilmGenres(rs.getLong("id")),
                     getDirectorOfTheFilm(rs.getLong("id"))
             ), params.toArray());
         } catch (Exception e) {
@@ -308,6 +309,9 @@ public class FilmDbStorageImpl implements FilmStorage {
     public List<Film> getFilmsByDirector(Long directorId, String sortBy) {
         if (directorId == null || sortBy == null || sortBy.isEmpty()) {
             throw new ValidationException("Передан пустой аргумент!");
+        }
+        if (directorDbStorage.getDirectorById(directorId) == null) {
+            throw new NotFoundException("Режиссер с ID=" + directorId + " не найден!");
         }
         String sql;
         if (sortBy.equals("year")) {
@@ -405,7 +409,7 @@ public class FilmDbStorageImpl implements FilmStorage {
         StringBuilder sql = new StringBuilder();
         List<Object> params = new ArrayList<>();
         if (searchBy.contains("title")) {
-            sql.append("SELECT f.id FROM films f WHERE f.name LIKE ? ");
+            sql.append("SELECT f.id FROM films f WHERE LOWER(f.name) LIKE LOWER(?) ");
             params.add("%" + query + "%");
 
             if (searchBy.contains("director")) {
@@ -415,12 +419,12 @@ public class FilmDbStorageImpl implements FilmStorage {
         if (searchBy.contains("director")) {
             sql.append("SELECT fd.film_id FROM film_directors fd " +
                     "JOIN directors d ON fd.director_id = d.id " +
-                    "WHERE d.name LIKE ? ");
+                    "WHERE LOWER(d.name) LIKE LOWER(?) ");
             if (!params.isEmpty()) {
                 String combinedSql = "SELECT DISTINCT f.id FROM films f "
                         + "LEFT JOIN film_directors fd ON f.id = fd.film_id "
                         + "LEFT JOIN directors d ON fd.director_id = d.id "
-                        + "WHERE f.name LIKE ? OR d.name LIKE ?";
+                        + "WHERE LOWER(f.name) LIKE LOWER(?) OR LOWER(d.name) LIKE LOWER(?)";
                 return jdbcTemplate.queryForList(combinedSql, Long.class, "%" + query + "%", "%" + query + "%")
                         .stream()
                         .map(this::getFilm)

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.OperationEvent;
@@ -9,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.impl.UserDbStorageImpl;
 import java.util.List;
 
 @Service
+@Slf4j
 public class LikesService {
     private final LikesDbStorageImpl likesDbStorage;
     private final UserDbStorageImpl userDbStorage;

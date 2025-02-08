@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
@@ -26,12 +27,12 @@ public class DirectorController {
     }
 
     @PostMapping()
-    public Director createDirector(@RequestBody Director director) {
+    public Director createDirector(@RequestBody @Validated Director director) {
         return directorService.addDirector(director);
     }
 
     @PutMapping()
-    public Director updateDirector(@RequestBody Director director) {
+    public Director updateDirector(@RequestBody @Validated Director director) {
         return directorService.updateDirector(director);
     }
 
