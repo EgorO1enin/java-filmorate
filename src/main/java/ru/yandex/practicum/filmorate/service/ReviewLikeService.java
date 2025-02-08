@@ -17,7 +17,6 @@ public class ReviewLikeService {
 
     public void addLike(Long reviewId, Long userId) {
         reviewLikeStorage.addLike(reviewId, userId);
-
     }
 
     public void addDislike(Long reviewId, Long userId) {
