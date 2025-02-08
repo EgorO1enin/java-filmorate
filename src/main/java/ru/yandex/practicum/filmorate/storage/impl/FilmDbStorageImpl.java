@@ -239,7 +239,7 @@ public class FilmDbStorageImpl implements FilmStorage {
         String sql = "SELECT genre_id, name FROM film_genres" +
                 " INNER JOIN genres ON genre_id = id WHERE film_id = ?";
         return new LinkedHashSet<>(jdbcTemplate.query(sql, (rs, rowNum) ->
-                        new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
+                new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId));
     }
 
     @Override
@@ -311,7 +311,7 @@ public class FilmDbStorageImpl implements FilmStorage {
             throw new ValidationException("Передан пустой аргумент!");
         }
         if (directorDbStorage.getDirectorById(directorId) == null) {
-            throw new NotFoundException("Режиссер с ID=" +  directorId + " не найден!");
+            throw new NotFoundException("Режиссер с ID=" + directorId + " не найден!");
         }
         String sql;
         if (sortBy.equals("year")) {
