@@ -2,9 +2,10 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.impl.FilmDbStorageImpl;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -36,7 +37,32 @@ public class FilmService {
         return film;
     }
 
-    public Collection<Film> getPopularFilms(int count) {
-        return filmDbStorage.getPopularFilms(count);
+    public Collection<Film> getPopularFilms(int count, Long genreId, Integer year) {
+        return filmDbStorage.getPopularFilms(count, genreId, year);
+    }
+
+    public void removeFilm(long id) {
+        filmDbStorage.removeFilm(id);
+    }
+
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        return filmDbStorage.getCommonFilms(userId, friendId);
+    }
+
+    public List<Film> getFilmsByDirector(Long dirId, String sortBy) {
+        return filmDbStorage.getFilmsByDirector(dirId, sortBy);
+    }
+
+    public List<Director> getDirectorOfTheFilm(Long filmId) {
+        return filmDbStorage.getDirectorOfTheFilm(filmId);
+    }
+
+    public List<Film> getUserRecommendations(Long userId) {
+        return filmDbStorage.getUserRecommendations(userId);
+    }
+
+    public List<Film> searchFilms(String query, List<String> searchBy) {
+        return filmDbStorage.searchFilms(query, searchBy);
+
     }
 }

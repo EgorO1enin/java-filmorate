@@ -5,12 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class User {
     private Long id;
@@ -20,7 +22,7 @@ public class User {
     @NotBlank(message = "Логин не должен быть пустым")
     private String login;
     private String name;
-    @PastOrPresent(message = "Дата рождения не может позже сегоднешнего дня")
+    @PastOrPresent(message = "Дата рождения не может быть позже сегодняшнего дня")
     private LocalDate birthday;
 
     public Map<String, Object> toMap() {
