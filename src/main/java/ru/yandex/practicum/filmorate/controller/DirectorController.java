@@ -26,12 +26,12 @@ public class DirectorController {
         return directorService.getDirectorById(id);
     }
 
-    @PostMapping()
+    @PostMapping
     public Director createDirector(@RequestBody @Validated Director director) {
         return directorService.addDirector(director);
     }
 
-    @PutMapping()
+    @PutMapping
     public Director updateDirector(@RequestBody @Validated Director director) {
         return directorService.updateDirector(director);
     }
